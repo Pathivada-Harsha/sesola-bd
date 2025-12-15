@@ -1,0 +1,37 @@
+/* Base App */
+.app {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Main content default */
+.main-content {
+  margin-left: 0;
+  padding-top: 64px;
+  min-height: 100vh;
+  transition: margin-left 0.25s ease;
+}
+
+/* DESKTOP — expanded sidebar (256px) */
+@media (min-width: 1024px) {
+  .app.sidebar-expanded .main-content {
+    margin-left: 256px;
+  }
+}
+
+/* DESKTOP — collapsed sidebar (72px) */
+@media (min-width: 1024px) {
+  .app.sidebar-collapsed .main-content {
+    margin-left: 72px;
+  }
+}
+
+/* Pages */
+.page-container {
+  padding: 24px;
+}
+
+/* Fullpage mode (login etc.) */
+.main-content.fullpage {
+  margin-left: 0 !important;
+}

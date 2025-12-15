@@ -1,0 +1,349 @@
+/* sidebar.css - includes collapsed state, transitions & grouped sections */
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-overlay {
+    display: none;
+  }
+}
+
+/* Base sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 64px;
+  height: calc(100vh - 64px);
+  width: 256px;
+  background-color: white;
+  border-right: 1px solid #e5e7eb;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.28s ease, width 0.22s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* When open on mobile */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* Desktop default: visible */
+@media (min-width: 1024px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Collapsed state (desktop only) */
+.sidebar.collapsed {
+  width: 72px;
+}
+
+/* Sidebar content wrapper */
+.sidebar-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Logo area */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.sidebar-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.sidebar-logo-text {
+  font-weight: 700;
+  color: #0b63d6;
+  font-size: 18px;
+}
+
+/* Close button (mobile) */
+.sidebar-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sidebar-close:hover {
+  background-color: #f3f4f6;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-close {
+    display: none;
+  }
+}
+
+/* Nav container */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  flex: 1;
+}
+
+/* ===== GROUP STYLES ===== */
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+/* Group Header */
+.sidebar-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  user-select: none;
+}
+
+.sidebar-group-header.collapsible {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.sidebar-group-header.collapsible:hover {
+  background-color: #f9fafb;
+}
+
+.sidebar-group-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevron icon */
+.sidebar-group-chevron {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  color: #9ca3af;
+}
+
+.sidebar-group-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+/* Group Items Container */
+.sidebar-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.25s ease;
+}
+
+.sidebar-group-items.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.sidebar-group-items.expanded {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* Nav items */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  padding-left: 24px; /* Indent items under group */
+  border-radius: 8px;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+/* Child item connector icon */
+.child-connector {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  opacity: 0.6;
+}
+
+.sidebar-item:hover .child-connector {
+  opacity: 1;
+  color: #6b7280;
+}
+
+.sidebar-item.active .child-connector {
+  opacity: 1;
+  color: #2563eb;
+}
+
+/* Icon-only layout when sidebar collapsed */
+.sidebar.collapsed .sidebar-item {
+  justify-content: center;
+  padding: 10px 6px;
+  padding-left: 6px;
+}
+
+/* Hide connector icon when collapsed */
+.sidebar.collapsed .child-connector {
+  display: none;
+}
+
+/* Hide text label when collapsed */
+.sidebar.collapsed .sidebar-label,
+.sidebar.collapsed .sidebar-logo-text,
+.sidebar.collapsed .sidebar-group-title {
+  display: none;
+}
+
+/* Hide chevron when collapsed but keep group headers clickable */
+.sidebar.collapsed .sidebar-group-chevron {
+  display: none;
+}
+
+/* Adjust group header in collapsed mode */
+.sidebar.collapsed .sidebar-group-header {
+  justify-content: center;
+  padding: 8px 6px;
+}
+
+/* Adjust logo alignment in collapsed mode */
+.sidebar.collapsed .sidebar-logo {
+  justify-content: center;
+}
+
+/* Hover / active */
+.sidebar-item:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-item.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.sidebar-item .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Bottom area: collapse control */
+.sidebar-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-top: 1px dashed #eef2f6;
+}
+
+/* Collapse button */
+.sidebar-collapse-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.sidebar-collapse-btn:hover {
+  background-color: #f3f4f6;
+}
+
+/* Optional text button (shown only when expanded) */
+.sidebar-collapse-text {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Responsive: on small screens, collapsed state should not hide labels */
+@media (max-width: 1023px) {
+  .sidebar.collapsed {
+    width: 256px;
+  }
+  
+  .sidebar.collapsed .sidebar-label,
+  .sidebar.collapsed .sidebar-group-title {
+    display: inline;
+  }
+  
+  .sidebar.collapsed .sidebar-group-chevron {
+    display: block;
+  }
+  
+  .sidebar.collapsed .sidebar-item {
+    justify-content: flex-start;
+    padding: 10px 12px;
+    padding-left: 24px;
+  }
+  
+  .sidebar.collapsed .sidebar-group-header {
+    justify-content: space-between;
+    padding: 8px 12px;
+  }
+  
+  .sidebar-logo-text {
+    display: inline;
+  }
+}
+
+/* Small adjustments for when collapsed and items need narrower radius */
+.sidebar.collapsed .sidebar-item {
+  border-radius: 12px;
+}
+
+/* Icon color */
+.sidebar .icon {
+  color: #0b63d6;
+}
+
+/* Active icon inherits active color */
+.sidebar-item.active .icon {
+  color: inherit;
+}

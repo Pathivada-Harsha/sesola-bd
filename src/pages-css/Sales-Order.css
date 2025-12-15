@@ -1,0 +1,840 @@
+/* Sales Orders Page Styles */
+
+/* Container */
+.sales-salesorder-container {
+  padding: 24px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif; */
+}
+
+/* Breadcrumb */
+.sales-salesorder-breadcrumb {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+/* Header */
+.sales-salesorder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sales-salesorder-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.sales-salesorder-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* KPI Grid */
+.sales-salesorder-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sales-salesorder-kpi-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sales-salesorder-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sales-salesorder-kpi-title {
+  font-size: 13px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.sales-salesorder-kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.sales-salesorder-kpi-subtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.sales-salesorder-kpi-trend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.sales-salesorder-kpi-trend.positive {
+  color: #10b981;
+}
+
+.sales-salesorder-kpi-trend.negative {
+  color: #ef4444;
+}
+
+/* Action Bar */
+.sales-salesorder-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sales-salesorder-search-filter {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  max-width: 600px;
+}
+
+.sales-salesorder-search {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sales-salesorder-search:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.sales-salesorder-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Buttons */
+.sales-salesorder-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.sales-salesorder-btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.sales-salesorder-btn-primary:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.sales-salesorder-btn-secondary {
+  background-color: white;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.sales-salesorder-btn-secondary:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.sales-salesorder-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.sales-salesorder-icon-btn:hover {
+  background-color: #f1f5f9;
+}
+
+/* Filters Panel */
+.sales-salesorder-filters-panel {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sales-salesorder-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.sales-salesorder-filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Bulk Actions */
+.sales-salesorder-bulk-actions {
+  background: #eff6ff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #bfdbfe;
+}
+
+.sales-salesorder-bulk-actions span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e40af;
+  margin-right: auto;
+}
+
+/* Table */
+.sales-salesorder-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.sales-salesorder-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sales-salesorder-table thead {
+  background-color: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sales-salesorder-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.sales-salesorder-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sales-salesorder-table-row:hover {
+  background-color: #f8fafc;
+}
+
+.sales-salesorder-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sales-salesorder-sortable:hover {
+  color: #3b82f6;
+}
+
+.sales-salesorder-checkbox-col {
+  width: 40px;
+}
+
+.sales-salesorder-link {
+  color: #3b82f6;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.sales-salesorder-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.sales-salesorder-text-muted {
+  color: #94a3b8;
+}
+
+.sales-salesorder-action-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+/* Badges */
+.sales-salesorder-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.sales-salesorder-badge-draft {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.sales-salesorder-badge-confirmed {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.sales-salesorder-badge-shipped {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.sales-salesorder-badge-delivered {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.sales-salesorder-badge-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.sales-salesorder-badge-payment-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.sales-salesorder-badge-payment-partial {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+.sales-salesorder-badge-payment-paid {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* Pagination */
+.sales-salesorder-pagination {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sales-salesorder-pagination-info {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.sales-salesorder-pagination-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sales-salesorder-pagination-select {
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sales-salesorder-pagination-btn {
+  padding: 6px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sales-salesorder-pagination-btn:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.sales-salesorder-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sales-salesorder-pagination-current {
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+/* Drawer */
+.sales-salesorder-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sales-salesorder-drawer {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.sales-salesorder-drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sales-salesorder-drawer-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.sales-salesorder-drawer-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.sales-salesorder-close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.sales-salesorder-close-btn:hover {
+  background-color: #f1f5f9;
+}
+
+.sales-salesorder-drawer-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.sales-salesorder-drawer-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  background: white;
+  position: sticky;
+  bottom: 0;
+}
+
+/* Detail Sections */
+.sales-salesorder-detail-section {
+  margin-bottom: 32px;
+}
+
+.sales-salesorder-detail-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sales-salesorder-detail-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sales-salesorder-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sales-salesorder-detail-row:last-child {
+  border-bottom: none;
+}
+
+.sales-salesorder-detail-label {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.sales-salesorder-detail-value {
+  color: #1e293b;
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Items Table */
+.sales-salesorder-items-table {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.sales-salesorder-items-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sales-salesorder-items-table th {
+  background-color: #f8fafc;
+  padding: 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.sales-salesorder-items-table td {
+  padding: 12px;
+  font-size: 14px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sales-salesorder-items-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sales-salesorder-item-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.sales-salesorder-item-desc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Totals */
+.sales-salesorder-totals {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sales-salesorder-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+.sales-salesorder-grand-total {
+  border-top: 2px solid #e2e8f0;
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Timeline */
+.sales-salesorder-timeline {
+  position: relative;
+  padding-left: 32px;
+}
+
+.sales-salesorder-timeline-item {
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.sales-salesorder-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.sales-salesorder-timeline-dot {
+  position: absolute;
+  left: -32px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+.sales-salesorder-timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 16px;
+  bottom: -8px;
+  width: 2px;
+  background-color: #e2e8f0;
+}
+
+.sales-salesorder-timeline-content {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sales-salesorder-timeline-action {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.sales-salesorder-timeline-meta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .sales-salesorder-kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  
+  .sales-salesorder-drawer {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sales-salesorder-container {
+    padding: 16px;
+  }
+  
+  .sales-salesorder-title {
+    font-size: 24px;
+  }
+  
+  .sales-salesorder-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sales-salesorder-search-filter {
+    max-width: 100%;
+  }
+  
+  .sales-salesorder-actions {
+    justify-content: stretch;
+  }
+  
+  .sales-salesorder-actions button {
+    flex: 1;
+  }
+  
+  .sales-salesorder-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .sales-salesorder-drawer {
+    max-width: 100%;
+  }
+  
+  .sales-salesorder-table-container {
+    overflow-x: auto;
+  }
+  
+  .sales-salesorder-table {
+    min-width: 1000px;
+  }
+  
+  .sales-salesorder-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sales-salesorder-pagination-controls {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .sales-salesorder-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sales-salesorder-filters-panel {
+    flex-direction: column;
+  }
+  
+  .sales-salesorder-filter-select {
+    width: 100%;
+  }
+  
+  /* modal/drawer responsive tweaks below will help */
+  .sales-salesorder-modal { width: 100%; height: 100%; border-radius: 0; }
+}
+
+/* ---------------------- Modal & form tweaks (added) ---------------------- */
+
+/* Modal overlay (create & edit) */
+.sales-salesorder-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.sales-salesorder-modal {
+  width: 820px;
+  max-width: 95%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.2);
+  overflow: hidden;
+}
+
+.sales-salesorder-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.sales-salesorder-modal-body {
+  padding: 16px;
+}
+
+/* form inputs used in modal/drawer */
+.sales-salesorder-modal input[type="text"],
+.sales-salesorder-modal input[type="date"],
+.sales-salesorder-modal input[type="number"],
+.sales-salesorder-modal textarea,
+.sales-salesorder-modal select,
+.sales-salesorder-drawer input[type="text"],
+.sales-salesorder-drawer input[type="date"],
+.sales-salesorder-drawer textarea {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* small close button */
+.sales-salesorder-close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+/* override icon buttons to align nicely */
+.sales-salesorder-icon-btn { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:6px; border: none; background: transparent; cursor:pointer; }
+.sales-salesorder-icon-btn:hover { background:#f1f5f9; }
+
+/* textarea in drawer */
+.sales-salesorder-drawer textarea { min-height: 80px; }
+
+/* responsive tweaks for modal */
+@media (max-width: 720px) {
+  .sales-salesorder-modal { width: 100%; height: 100%; border-radius: 0; }
+  .sales-salesorder-modal-body { padding: 12px; }
+}

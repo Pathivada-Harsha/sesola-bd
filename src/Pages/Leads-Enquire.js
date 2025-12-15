@@ -1,0 +1,624 @@
+// Leads-Enquiries.js
+import React, { useState } from 'react';
+import '../pages-css/Leads-Enquire.css';
+
+function LeadsEnquiries() {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [priorityFilter, setPriorityFilter] = useState('All');
+  const [sourceFilter, setSourceFilter] = useState('All');
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortColumn, setSortColumn] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
+
+  // Sample data
+  const [leads, setLeads] = useState([
+    {
+      id: 'LD-2024-001',
+      clientName: 'John Smith',
+      companyName: 'Tech Solutions Inc',
+      email: 'john@techsolutions.com',
+      phone: '+1 234 567 8900',
+      source: 'Website',
+      priority: 'High',
+      status: 'New',
+      assignedTo: 'Sarah M.',
+      lastUpdated: '2024-12-09',
+      description: 'Looking for enterprise software solution',
+      documents: ['requirement_doc.pdf'],
+      activities: [
+        { type: 'Note', date: '2024-12-09', user: 'Sarah M.', content: 'Initial contact made' }
+      ]
+    },
+    {
+      id: 'LD-2024-002',
+      clientName: 'Emily Johnson',
+      companyName: 'Global Enterprises',
+      email: 'emily@global.com',
+      phone: '+1 234 567 8901',
+      source: 'Referral',
+      priority: 'Medium',
+      status: 'Contacted',
+      assignedTo: 'Mike R.',
+      lastUpdated: '2024-12-08',
+      description: 'Interested in cloud infrastructure',
+      documents: [],
+      activities: [
+        { type: 'Call', date: '2024-12-08', user: 'Mike R.', content: 'Discussed requirements' }
+      ]
+    },
+    {
+      id: 'LD-2024-003',
+      clientName: 'Robert Brown',
+      companyName: 'Innovation Labs',
+      email: 'robert@innovationlabs.com',
+      phone: '+1 234 567 8902',
+      source: 'Cold Call',
+      priority: 'High',
+      status: 'Proposal Sent',
+      assignedTo: 'Emma T.',
+      lastUpdated: '2024-12-07',
+      description: 'Custom CRM development needed',
+      documents: ['proposal_v1.pdf'],
+      activities: [
+        { type: 'Email', date: '2024-12-07', user: 'Emma T.', content: 'Sent proposal document' },
+        { type: 'Follow-up', date: '2024-12-06', user: 'Emma T.', content: 'Scheduled meeting' }
+      ]
+    }
+  ]);
+
+  const [formData, setFormData] = useState({
+    clientName: '',
+    companyName: '',
+    email: '',
+    phone: '',
+    source: 'Website',
+    priority: 'Medium',
+    status: 'New',
+    assignedTo: '',
+    description: ''
+  });
+
+  const handleSort = (column) => {
+    const direction = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc';
+    setSortColumn(column);
+    setSortDirection(direction);
+  };
+
+  const handleView = (lead) => {
+    setSelectedLead(lead);
+    setShowViewModal(true);
+  };
+
+  const handleEdit = (lead) => {
+    setFormData(lead);
+    setShowAddModal(true);
+  };
+
+  const handleDelete = (leadId) => {
+    if (window.confirm('Are you sure you want to delete this lead?')) {
+      setLeads(leads.filter(lead => lead.id !== leadId));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.id) {
+      // Update existing lead
+      setLeads(leads.map(lead => lead.id === formData.id ? formData : lead));
+    } else {
+      // Add new lead
+      const newLead = {
+        ...formData,
+        id: `LD-2024-${String(leads.length + 1).padStart(3, '0')}`,
+        lastUpdated: new Date().toISOString().split('T')[0],
+        documents: [],
+        activities: []
+      };
+      setLeads([...leads, newLead]);
+    }
+    setShowAddModal(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setFormData({
+      clientName: '',
+      companyName: '',
+      email: '',
+      phone: '',
+      source: 'Website',
+      priority: 'Medium',
+      status: 'New',
+      assignedTo: '',
+      description: ''
+    });
+  };
+
+  const getStatusClass = (status) => {
+    const statusClasses = {
+      'New': 'leads-enquiries-badge-new',
+      'Contacted': 'leads-enquiries-badge-contacted',
+      'In Discussion': 'leads-enquiries-badge-discussion',
+      'Proposal Sent': 'leads-enquiries-badge-proposal',
+      'Closed Won': 'leads-enquiries-badge-won',
+      'Closed Lost': 'leads-enquiries-badge-lost'
+    };
+    return statusClasses[status] || 'leads-enquiries-badge-default';
+  };
+
+  const getPriorityClass = (priority) => {
+    const priorityClasses = {
+      'High': 'leads-enquiries-badge-high',
+      'Medium': 'leads-enquiries-badge-medium',
+      'Low': 'leads-enquiries-badge-low'
+    };
+    return priorityClasses[priority] || 'leads-enquiries-badge-default';
+  };
+
+  // Filter and search logic
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = 
+      lead.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.phone.includes(searchTerm) ||
+      lead.id.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
+    const matchesPriority = priorityFilter === 'All' || lead.priority === priorityFilter;
+    const matchesSource = sourceFilter === 'All' || lead.source === sourceFilter;
+
+    return matchesSearch && matchesStatus && matchesPriority && matchesSource;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredLeads.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const currentLeads = filteredLeads.slice(startIndex, endIndex);
+
+  return (
+    <div className="leads-enquiries-container">
+      {/* Breadcrumb */}
+      <div className="leads-enquiries-breadcrumb">
+        <span>Dashboard</span>
+        <span className="leads-enquiries-breadcrumb-separator">&gt;</span>
+        <span className="leads-enquiries-breadcrumb-active">Leads / Enquiries</span>
+      </div>
+
+      {/* Page Header */}
+      <div className="leads-enquiries-header">
+        <div>
+          <h1 className="leads-enquiries-title">Leads / Enquiries</h1>
+          <p className="leads-enquiries-subtitle">Manage and track all your leads and enquiries</p>
+        </div>
+      </div>
+
+      {/* Action Bar */}
+      <div className="leads-enquiries-action-bar">
+        <div className="leads-enquiries-search-wrapper">
+          <svg className="leads-enquiries-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by name, company, email, phone, or ID..."
+            className="leads-enquiries-search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="leads-enquiries-filters">
+          <select 
+            className="leads-enquiries-filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All">All Status</option>
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Discussion">In Discussion</option>
+            <option value="Proposal Sent">Proposal Sent</option>
+            <option value="Closed Won">Closed Won</option>
+            <option value="Closed Lost">Closed Lost</option>
+          </select>
+
+          <select 
+            className="leads-enquiries-filter-select"
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+          >
+            <option value="All">All Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+
+          <select 
+            className="leads-enquiries-filter-select"
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+          >
+            <option value="All">All Sources</option>
+            <option value="Website">Website</option>
+            <option value="Referral">Referral</option>
+            <option value="Cold Call">Cold Call</option>
+            <option value="Email">Email</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        <div className="leads-enquiries-action-buttons">
+          <button className="leads-enquiries-btn leads-enquiries-btn-primary" onClick={() => { resetForm(); setShowAddModal(true); }}>
+            <svg className="leads-enquiries-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Lead
+          </button>
+          <button className="leads-enquiries-btn leads-enquiries-btn-secondary">
+            <svg className="leads-enquiries-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      {/* Data Table */}
+      <div className="leads-enquiries-table-card">
+        <div className="leads-enquiries-table-wrapper">
+          <table className="leads-enquiries-table">
+            <thead>
+              <tr>
+                <th onClick={() => handleSort('id')}>Lead ID</th>
+                <th onClick={() => handleSort('clientName')}>Client Name</th>
+                <th onClick={() => handleSort('companyName')}>Company Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Source</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th onClick={() => handleSort('lastUpdated')}>Last Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentLeads.map((lead) => (
+                <tr key={lead.id}>
+                  <td className="leads-enquiries-font-medium">{lead.id}</td>
+                  <td className="leads-enquiries-font-medium">{lead.clientName}</td>
+                  <td>{lead.companyName}</td>
+                  <td>{lead.email}</td>
+                  <td>{lead.phone}</td>
+                  <td>{lead.source}</td>
+                  <td>
+                    <span className={`leads-enquiries-badge ${getPriorityClass(lead.priority)}`}>
+                      {lead.priority}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`leads-enquiries-badge ${getStatusClass(lead.status)}`}>
+                      {lead.status}
+                    </span>
+                  </td>
+                  <td>{lead.assignedTo}</td>
+                  <td>{lead.lastUpdated}</td>
+                  <td>
+                    <div className="leads-enquiries-action-buttons-cell">
+                      <button 
+                        className="leads-enquiries-action-btn leads-enquiries-action-view"
+                        onClick={() => handleView(lead)}
+                        title="View"
+                      >
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="leads-enquiries-action-btn leads-enquiries-action-edit"
+                        onClick={() => handleEdit(lead)}
+                        title="Edit"
+                      >
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="leads-enquiries-action-btn leads-enquiries-action-delete"
+                        onClick={() => handleDelete(lead.id)}
+                        title="Delete"
+                      >
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="leads-enquiries-pagination">
+          <div className="leads-enquiries-pagination-info">
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredLeads.length)} of {filteredLeads.length} entries
+          </div>
+          <div className="leads-enquiries-pagination-controls">
+            <select 
+              className="leads-enquiries-rows-select"
+              value={rowsPerPage}
+              onChange={(e) => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+            >
+              <option value={10}>10 rows</option>
+              <option value={25}>25 rows</option>
+              <option value={50}>50 rows</option>
+            </select>
+            <div className="leads-enquiries-pagination-buttons">
+              <button 
+                className="leads-enquiries-pagination-btn"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span className="leads-enquiries-pagination-current">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button 
+                className="leads-enquiries-pagination-btn"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Add/Edit Lead Modal */}
+      {showAddModal && (
+        <div className="leads-enquiries-modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="leads-enquiries-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="leads-enquiries-modal-header">
+              <h2>{formData.id ? 'Edit Lead' : 'Add New Lead'}</h2>
+              <button className="leads-enquiries-modal-close" onClick={() => setShowAddModal(false)}>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="leads-enquiries-form">
+              <div className="leads-enquiries-form-section">
+                <h3 className="leads-enquiries-form-section-title">Client Information</h3>
+                <div className="leads-enquiries-form-grid">
+                  <div className="leads-enquiries-form-group">
+                    <label>Client Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.clientName}
+                      onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                    />
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Company Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.companyName}
+                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                    />
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Email *</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Phone *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="leads-enquiries-form-section">
+                <h3 className="leads-enquiries-form-section-title">Lead Details</h3>
+                <div className="leads-enquiries-form-grid">
+                  <div className="leads-enquiries-form-group">
+                    <label>Lead Source *</label>
+                    <select
+                      required
+                      value={formData.source}
+                      onChange={(e) => setFormData({...formData, source: e.target.value})}
+                    >
+                      <option value="Website">Website</option>
+                      <option value="Referral">Referral</option>
+                      <option value="Cold Call">Cold Call</option>
+                      <option value="Email">Email</option>
+                      <option value="Others">Others</option>
+                    </select>
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Priority *</label>
+                    <select
+                      required
+                      value={formData.priority}
+                      onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                    >
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Status *</label>
+                    <select
+                      required
+                      value={formData.status}
+                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                    >
+                      <option value="New">New</option>
+                      <option value="Contacted">Contacted</option>
+                      <option value="In Discussion">In Discussion</option>
+                      <option value="Proposal Sent">Proposal Sent</option>
+                      <option value="Closed Won">Closed Won</option>
+                      <option value="Closed Lost">Closed Lost</option>
+                    </select>
+                  </div>
+                  <div className="leads-enquiries-form-group">
+                    <label>Assign To *</label>
+                    <select
+                      required
+                      value={formData.assignedTo}
+                      onChange={(e) => setFormData({...formData, assignedTo: e.target.value})}
+                    >
+                      <option value="">Select Member</option>
+                      <option value="Sarah M.">Sarah M.</option>
+                      <option value="Mike R.">Mike R.</option>
+                      <option value="Emma T.">Emma T.</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="leads-enquiries-form-group">
+                  <label>Enquiry Description *</label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Describe the client's requirements..."
+                  />
+                </div>
+              </div>
+
+              <div className="leads-enquiries-form-actions">
+                <button type="button" className="leads-enquiries-btn leads-enquiries-btn-secondary" onClick={() => setShowAddModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="leads-enquiries-btn leads-enquiries-btn-primary">
+                  {formData.id ? 'Update Lead' : 'Save Lead'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Details Modal */}
+      {showViewModal && selectedLead && (
+        <div className="leads-enquiries-modal-overlay" onClick={() => setShowViewModal(false)}>
+          <div className="leads-enquiries-modal leads-enquiries-modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="leads-enquiries-modal-header">
+              <h2>Lead Details - {selectedLead.id}</h2>
+              <button className="leads-enquiries-modal-close" onClick={() => setShowViewModal(false)}>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="leads-enquiries-modal-body">
+              <div className="leads-enquiries-detail-section">
+                <h3>Basic Information</h3>
+                <div className="leads-enquiries-detail-grid">
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Client Name:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.clientName}</span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Company:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.companyName}</span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Email:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.email}</span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Phone:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.phone}</span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Source:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.source}</span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Priority:</span>
+                    <span className={`leads-enquiries-badge ${getPriorityClass(selectedLead.priority)}`}>
+                      {selectedLead.priority}
+                    </span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Status:</span>
+                    <span className={`leads-enquiries-badge ${getStatusClass(selectedLead.status)}`}>
+                      {selectedLead.status}
+                    </span>
+                  </div>
+                  <div className="leads-enquiries-detail-item">
+                    <span className="leads-enquiries-detail-label">Assigned To:</span>
+                    <span className="leads-enquiries-detail-value">{selectedLead.assignedTo}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="leads-enquiries-detail-section">
+                <h3>Enquiry Description</h3>
+                <p className="leads-enquiries-description">{selectedLead.description}</p>
+              </div>
+
+              <div className="leads-enquiries-detail-section">
+                <h3>Activity Timeline</h3>
+                <div className="leads-enquiries-timeline">
+                  {selectedLead.activities.map((activity, index) => (
+                    <div key={index} className="leads-enquiries-timeline-item">
+                      <div className="leads-enquiries-timeline-marker"></div>
+                      <div className="leads-enquiries-timeline-content">
+                        <div className="leads-enquiries-timeline-header">
+                          <span className="leads-enquiries-timeline-type">{activity.type}</span>
+                          <span className="leads-enquiries-timeline-date">{activity.date}</span>
+                        </div>
+                        <div className="leads-enquiries-timeline-body">
+                          <p>{activity.content}</p>
+                          <span className="leads-enquiries-timeline-user">by {activity.user}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="leads-enquiries-modal-actions">
+                <button className="leads-enquiries-btn leads-enquiries-btn-secondary">Add Note</button>
+                <button className="leads-enquiries-btn leads-enquiries-btn-secondary">Add Follow-Up</button>
+                <button className="leads-enquiries-btn leads-enquiries-btn-primary" onClick={() => handleEdit(selectedLead)}>
+                  Edit Lead
+                </button>
+                <button className="leads-enquiries-btn leads-enquiries-btn-primary">Convert to Proposal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default LeadsEnquiries;

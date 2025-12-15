@@ -1,0 +1,744 @@
+/* dashboard-styles.css */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-container {
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; */
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 20px 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.dashboard-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dashboard-filter-select {
+  padding: 7px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-filter-select:hover {
+  border-color: #cbd5e1;
+}
+
+.dashboard-filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Tabs - Simple Style with Underline */
+.dashboard-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 24px;
+}
+
+.dashboard-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  margin-bottom: -2px;
+}
+
+.dashboard-tab:hover {
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+.dashboard-tab-active {
+  color: #3b82f6;
+  font-weight: 600;
+  border-bottom-color: #3b82f6;
+}
+
+.dashboard-tab-active:hover {
+  color: #2563eb;
+  background: transparent;
+}
+
+.dashboard-tab-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-tab-text {
+  white-space: nowrap;
+}
+
+/* Content Animation */
+.dashboard-salestab-content,
+.dashboard-procurementtab-content {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* KPI Grid */
+.dashboard-salestab-kpi-grid,
+.dashboard-procurementtab-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dashboard-salestab-kpi-card,
+.dashboard-procurementtab-kpi-card {
+  background: white;
+  padding: 18px 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+  border: 1px solid #f1f5f9;
+}
+
+.dashboard-salestab-kpi-card:hover,
+.dashboard-procurementtab-kpi-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  border-color: #e2e8f0;
+}
+
+.dashboard-salestab-kpi-label,
+.dashboard-procurementtab-kpi-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-salestab-kpi-value,
+.dashboard-procurementtab-kpi-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.dashboard-salestab-kpi-trend,
+.dashboard-procurementtab-kpi-trend {
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.trend-up {
+  color: #10b981;
+}
+
+.trend-down {
+  color: #ef4444;
+}
+
+/* Two Column Layout */
+.dashboard-salestab-two-column,
+.dashboard-procurementtab-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* Card Styles */
+.dashboard-salestab-card,
+.dashboard-procurementtab-card {
+  background: white;
+  padding: 22px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.dashboard-salestab-card-title,
+.dashboard-procurementtab-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 18px;
+}
+
+.dashboard-salestab-card-header,
+.dashboard-procurementtab-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.dashboard-salestab-view-all-btn,
+.dashboard-procurementtab-view-all-btn {
+  padding: 6px 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-salestab-view-all-btn:hover,
+.dashboard-procurementtab-view-all-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Leads Overview */
+.dashboard-salestab-leads-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.dashboard-salestab-lead-stat {
+  text-align: center;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.dashboard-salestab-lead-count {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.dashboard-salestab-lead-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.dashboard-salestab-chart-placeholder {
+  margin-top: 18px;
+}
+
+.dashboard-salestab-line-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100px;
+  gap: 3px;
+  padding: 0 6px;
+}
+
+.dashboard-salestab-chart-bar {
+  flex: 1;
+  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  border-radius: 3px 3px 0 0;
+  transition: all 0.3s;
+  min-height: 15px;
+}
+
+.dashboard-salestab-chart-bar:hover {
+  background: linear-gradient(to top, #2563eb, #3b82f6);
+  opacity: 0.9;
+}
+
+.dashboard-salestab-chart-label {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Sales Funnel */
+.dashboard-salestab-funnel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-salestab-funnel-stage {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  padding: 16px 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s;
+}
+
+.dashboard-salestab-funnel-stage:hover {
+  border-color: #3b82f6;
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.dashboard-salestab-funnel-stage-name {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-salestab-funnel-stage-count {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.dashboard-salestab-funnel-stage-dropoff {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.dashboard-salestab-funnel-arrow {
+  font-size: 20px;
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+/* Tables */
+.dashboard-salestab-table-container,
+.dashboard-procurementtab-table-container {
+  overflow-x: auto;
+}
+
+.dashboard-salestab-table,
+.dashboard-procurementtab-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-salestab-table th,
+.dashboard-salestab-table td,
+.dashboard-procurementtab-table th,
+.dashboard-procurementtab-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dashboard-salestab-table th,
+.dashboard-procurementtab-table th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #475569;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.dashboard-salestab-table td,
+.dashboard-procurementtab-table td {
+  font-size: 13px;
+  color: #475569;
+}
+
+.dashboard-salestab-table tbody tr:hover,
+.dashboard-procurementtab-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.dashboard-salestab-status,
+.dashboard-procurementtab-status {
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-paid,
+.status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pending,
+.status-under-review {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-in-progress,
+.status-advance-paid {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Follow-ups */
+.dashboard-salestab-followup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.dashboard-salestab-followup-item {
+  text-align: center;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+}
+
+.dashboard-salestab-followup-count {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.dashboard-salestab-followup-count.today {
+  color: #3b82f6;
+}
+
+.dashboard-salestab-followup-count.overdue {
+  color: #ef4444;
+}
+
+.dashboard-salestab-followup-count.upcoming {
+  color: #f59e0b;
+}
+
+.dashboard-salestab-followup-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Timeline */
+.dashboard-salestab-timeline,
+.dashboard-procurementtab-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-salestab-timeline-item,
+.dashboard-procurementtab-timeline-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  transition: all 0.2s;
+}
+
+.dashboard-salestab-timeline-item:hover,
+.dashboard-procurementtab-timeline-item:hover {
+  background: #eff6ff;
+  border-left-color: #2563eb;
+  transform: translateX(2px);
+}
+
+.dashboard-salestab-timeline-icon,
+.dashboard-procurementtab-timeline-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.dashboard-salestab-timeline-content,
+.dashboard-procurementtab-timeline-content {
+  flex: 1;
+}
+
+.dashboard-salestab-timeline-text,
+.dashboard-procurementtab-timeline-text {
+  font-size: 13px;
+  color: #1e293b;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.dashboard-salestab-timeline-time,
+.dashboard-procurementtab-timeline-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Procurement Specific Styles */
+.dashboard-procurementtab-chart-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 220px;
+  padding: 16px 0;
+  gap: 10px;
+}
+
+.dashboard-procurementtab-chart-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-procurementtab-chart-bar {
+  width: 100%;
+  max-width: 70px;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 6px;
+  transition: all 0.3s;
+}
+
+.dashboard-procurementtab-chart-bar:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+}
+
+.dashboard-procurementtab-chart-count {
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-procurementtab-chart-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Spend Chart */
+.dashboard-procurementtab-spend-chart {
+  padding: 16px 0;
+}
+
+.dashboard-procurementtab-spend-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 180px;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.dashboard-procurementtab-spend-bar {
+  flex: 1;
+  background: linear-gradient(to top, #10b981, #34d399);
+  border-radius: 5px 5px 0 0;
+  transition: all 0.3s;
+  position: relative;
+  min-height: 25px;
+}
+
+.dashboard-procurementtab-spend-bar:hover {
+  background: linear-gradient(to top, #059669, #10b981);
+}
+
+.dashboard-procurementtab-spend-bar:hover .dashboard-procurementtab-spend-tooltip {
+  display: block;
+}
+
+.dashboard-procurementtab-spend-tooltip {
+  display: none;
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dashboard-procurementtab-spend-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.dashboard-procurementtab-spend-month {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Vendor Rating */
+.dashboard-procurementtab-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dashboard-procurementtab-rating-value {
+  font-weight: 700;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-salestab-two-column,
+  .dashboard-procurementtab-two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-salestab-kpi-grid,
+  .dashboard-procurementtab-kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .dashboard-salestab-funnel {
+    flex-direction: column;
+  }
+
+  .dashboard-salestab-funnel-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .dashboard-title {
+    font-size: 22px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-salestab-kpi-grid,
+  .dashboard-procurementtab-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-salestab-leads-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-procurementtab-chart-grid {
+    overflow-x: auto;
+  }
+
+  .dashboard-tabs {
+    width: 100%;
+  }
+
+  .dashboard-tab {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .dashboard-salestab-followup-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-salestab-kpi-grid,
+  .dashboard-procurementtab-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-salestab-leads-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-filters {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .dashboard-filter-select {
+    width: 100%;
+  }
+
+  .dashboard-tab {
+    padding: 12px 16px;
+  }
+
+  .dashboard-tab-text {
+    font-size: 13px;
+  }
+
+  .dashboard-tab-icon {
+    font-size: 14px;
+  }
+}

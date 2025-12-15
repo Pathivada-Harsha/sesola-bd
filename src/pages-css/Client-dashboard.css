@@ -1,0 +1,222 @@
+
+
+/* -------------------------- ClientDashboard.css -------------------------- */
+
+/* Place this CSS in a file named ClientDashboard.css next to ClientDashboard.js */
+
+/* Root layout */
+.Client-Dashboard-page-root {
+  /* font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; */
+  color: #1f2937;
+  padding: 20px;
+  background: #f6f8fa;
+}
+
+.Client-Dashboard-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.Client-Dashboard-page-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background: #e6eef8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.Client-Dashboard-page-client-info h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.Client-Dashboard-page-client-meta {
+  color: #475569;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.Client-Dashboard-page-contact {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.Client-Dashboard-page-header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.Client-Dashboard-page-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+.Client-Dashboard-page-btn.primary {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+}
+
+/* Container */
+.Client-Dashboard-page-container {
+  display: flex;
+  gap: 20px;
+}
+
+/* Sidebar */
+.Client-Dashboard-page-side {
+  width: 260px;
+}
+
+.Client-Dashboard-page-side-kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.Client-Dashboard-page-side-kpi {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.Client-Dashboard-page-side-kpi-title {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.Client-Dashboard-page-side-kpi-value {
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.Client-Dashboard-page-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.Client-Dashboard-page-side-nav-item {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 10px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.Client-Dashboard-page-side-nav-item.active,
+.Client-Dashboard-page-side-nav-item:hover {
+  background: #e6f6ff;
+}
+
+/* Main */
+.Client-Dashboard-page-main {
+  flex: 1;
+}
+
+.Client-Dashboard-page-card {
+  background: white;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+  margin-bottom: 16px;
+}
+
+.Client-Dashboard-page-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.Client-Dashboard-page-kpi-card {
+  padding: 12px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.04);
+}
+
+.Client-Dashboard-page-kpi-title {
+  font-size: 12px;
+  color: #6b7280;
+}
+.Client-Dashboard-page-kpi-value {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.Client-Dashboard-page-two-col {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+.Client-Dashboard-page-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.Client-Dashboard-page-table th,
+.Client-Dashboard-page-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  font-size: 14px;
+}
+.Client-Dashboard-page-table thead th {
+  background: #fbfdff;
+  position: sticky;
+  top: 0;
+}
+
+.Client-Dashboard-page-row-clickable { cursor: pointer; }
+
+.Client-Dashboard-page-actions { display: flex; flex-direction: column; gap: 8px; }
+.Client-Dashboard-page-doc-list { list-style: none; padding: 0; margin: 0; }
+.Client-Dashboard-page-doc-list li { padding: 8px 0; border-bottom: 1px dashed #eef2f7; }
+.Client-Dashboard-page-doc-name { font-weight: 600; }
+.Client-Dashboard-page-doc-meta { display: block; font-size: 12px; color: #6b7280; }
+
+.Client-Dashboard-page-timeline { list-style: none; padding: 0; margin: 0; }
+.Client-Dashboard-page-timeline li { padding: 8px 0; border-left: 2px solid #e6eef8; margin-left: 6px; padding-left: 12px; }
+.Client-Dashboard-page-timeline-time { font-size: 12px; color: #6b7280; }
+.Client-Dashboard-page-timeline-text { font-size: 14px; }
+.Client-Dashboard-page-muted { color: #94a3b8; font-size: 13px; }
+
+/* Full width tables */
+.Client-Dashboard-page-table.full { width: 100%; }
+
+/* Drawer */
+.Client-Dashboard-page-drawer {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+.Client-Dashboard-page-drawer-content {
+  width: 420px;
+  background: white;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .Client-Dashboard-page-container { flex-direction: column; }
+  .Client-Dashboard-page-side { width: 100%; }
+  .Client-Dashboard-page-two-col { grid-template-columns: 1fr; }
+}

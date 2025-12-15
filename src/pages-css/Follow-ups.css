@@ -1,0 +1,134 @@
+/* ClientDashboardFollowUps.css
+   Use alongside ClientDashboard.css.
+   All classes are prefixed Client-Dashboard-page- to match existing style.
+*/
+
+.Client-Dashboard-page-followups-root {
+  /* margin-top: 8px; */
+  margin-bottom: 16px;
+   padding: 24px;
+}
+
+/* Header */
+.Client-Dashboard-page-followups-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.Client-Dashboard-page-followups-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* Form */
+.Client-Dashboard-page-followups-form {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(15,23,42,0.04);
+}
+
+.Client-Dashboard-page-form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.Client-Dashboard-page-form-row label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  font-size: 13px;
+  color: #475569;
+}
+
+.Client-Dashboard-page-form-row input,
+.Client-Dashboard-page-form-row select,
+.Client-Dashboard-page-form-row textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e6eef8;
+  margin-top: 6px;
+  font-size: 14px;
+  resize: vertical;
+  background: #ffffff;
+}
+
+/* Actions under form */
+.Client-Dashboard-page-form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* List card overrides */
+.Client-Dashboard-page-followups-list-card {
+  padding: 0; /* card already has padding in the shared class, we want table flush with card */
+}
+
+/* Table */
+.Client-Dashboard-page-followups-table th,
+.Client-Dashboard-page-followups-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef2f7;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.Client-Dashboard-page-followup-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.Client-Dashboard-page-followup-status.pending {
+  background: #fff7ed;
+  color: #b45309;
+}
+
+.Client-Dashboard-page-followup-status.completed {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.Client-Dashboard-page-followup-status.cancelled {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+/* Links/buttons in table */
+.Client-Dashboard-page-link {
+  background: transparent;
+  border: none;
+  color: #0ea5e9;
+  cursor: pointer;
+  padding: 6px 8px;
+  margin-right: 4px;
+}
+
+/* Small screens */
+@media (max-width: 800px) {
+  .Client-Dashboard-page-form-row { flex-direction: column; }
+  .Client-Dashboard-page-followups-table thead { display: none; }
+  .Client-Dashboard-page-followups-table tbody tr {
+    display: block;
+    border-bottom: 1px solid #eef2f7;
+    margin-bottom: 8px;
+  }
+  .Client-Dashboard-page-followups-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  .Client-Dashboard-page-followups-table tbody td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 8px;
+    color: #475569;
+  }
+}

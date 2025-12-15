@@ -1,0 +1,369 @@
+/* Dashboard.css - Complete Styles with dashboard-home- prefix */
+
+.dashboard-home-container {
+  padding: 24px;
+}
+
+.dashboard-home-header {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .dashboard-home-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.dashboard-home-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.dashboard-home-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 4px 0 0 0;
+}
+
+.dashboard-home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dashboard-home-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-home-btn-primary {
+  background-color: #2563eb;
+  color: white;
+}
+
+.dashboard-home-btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.dashboard-home-btn-secondary {
+  background-color: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.dashboard-home-btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+/* KPI Cards */
+.dashboard-home-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 640px) {
+  .dashboard-home-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-home-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dashboard-home-kpi-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+}
+
+.dashboard-home-kpi-label {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.dashboard-home-kpi-value {
+  font-size: 30px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.dashboard-home-kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.dashboard-home-trend {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dashboard-home-trend-up {
+  color: #059669;
+}
+
+.dashboard-home-trend-down {
+  color: #dc2626;
+}
+
+.dashboard-home-trend-label {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-left: 4px;
+}
+
+/* Table Card */
+.dashboard-home-table-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.dashboard-home-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dashboard-home-table-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-home-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-home-data-table thead {
+  background-color: #f9fafb;
+}
+
+.dashboard-home-data-table th {
+  padding: 12px 24px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-home-data-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.dashboard-home-data-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.dashboard-home-data-table td {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.dashboard-home-font-medium {
+  font-weight: 500;
+  color: #111827;
+}
+
+.dashboard-home-font-semibold {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Badges */
+.dashboard-home-badge {
+  display: inline-flex;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.dashboard-home-badge-sent {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.dashboard-home-badge-draft {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.dashboard-home-badge-approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.dashboard-home-badge-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.dashboard-home-badge-high-priority {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.dashboard-home-badge-medium {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.dashboard-home-badge-low {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* Link Button */
+.dashboard-home-link-button {
+  font-size: 14px;
+  color: #2563eb;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.dashboard-home-link-button:hover {
+  color: #1e40af;
+}
+
+/* Bottom Grid */
+.dashboard-home-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-home-bottom-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+/* Chart Card */
+.dashboard-home-chart-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+}
+
+.dashboard-home-chart-container {
+  height: 256px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dashboard-home-chart-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.dashboard-home-chart-bar {
+  width: 100%;
+  background-color: #2563eb;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s;
+}
+
+.dashboard-home-chart-bar:hover {
+  background-color: #1e40af;
+}
+
+.dashboard-home-chart-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Notifications Card */
+.dashboard-home-notifications-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+}
+
+.dashboard-home-notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.dashboard-home-notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.dashboard-home-notification-yellow {
+  background-color: #fef3c7;
+}
+
+.dashboard-home-notification-blue {
+  background-color: #dbeafe;
+}
+
+.dashboard-home-notification-red {
+  background-color: #fee2e2;
+}
+
+.dashboard-home-notification-content {
+  flex: 1;
+}
+
+.dashboard-home-notification-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+}
+
+.dashboard-home-notification-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 4px 0 0 0;
+}
