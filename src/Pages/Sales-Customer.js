@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../pages-css/Sales-Customer.css';
-
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 const CustomerDatabase = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -9,6 +10,7 @@ const CustomerDatabase = () => {
   const [selectedGroup, setSelectedGroup] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedRows, setSelectedRows] = useState([]);
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
 
   // Sample customer data
   const customers = [
@@ -294,15 +296,15 @@ const CustomerDatabase = () => {
   ];
 
   const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = 
+    const matchesSearch =
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.phone.includes(searchTerm);
-    
+
     const matchesGroup = selectedGroup === 'all' || customer.group === selectedGroup;
     const matchesStatus = selectedStatus === 'all' || customer.status === selectedStatus;
-    
+
     return matchesSearch && matchesGroup && matchesStatus;
   });
 
@@ -358,8 +360,17 @@ const CustomerDatabase = () => {
       </div>
 
       {/* Header */}
+      <div className="page-header-with-filter">
+
+        <GroupProjectFilter
+          groupValue={groupName}
+          projectValue={projectId}
+          onChange={updateFilters}
+        />
+      </div>
       <div className="sales-customer-page-header">
         <h1 className="sales-customer-page-title">Customer / Client Database</h1>
+
         <div className="sales-customer-page-header-actions">
           <button className="sales-customer-page-btn-secondary">
             <span className="sales-customer-page-icon">📥</span>
@@ -369,7 +380,7 @@ const CustomerDatabase = () => {
             <span className="sales-customer-page-icon">📤</span>
             Export CSV
           </button>
-          <button 
+          <button
             className="sales-customer-page-btn-primary"
             onClick={() => setIsAddFormOpen(true)}
           >
@@ -437,7 +448,7 @@ const CustomerDatabase = () => {
           />
         </div>
         <div className="sales-customer-page-filters">
-          <select 
+          <select
             className="sales-customer-page-filter-select"
             value={selectedGroup}
             onChange={(e) => setSelectedGroup(e.target.value)}
@@ -449,7 +460,7 @@ const CustomerDatabase = () => {
             <option value="IoT">IoT</option>
             <option value="Others">Others</option>
           </select>
-          <select 
+          <select
             className="sales-customer-page-filter-select"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
@@ -491,7 +502,7 @@ const CustomerDatabase = () => {
             <thead>
               <tr>
                 <th>
-                  <input 
+                  <input
                     type="checkbox"
                     checked={selectedRows.length === filteredCustomers.length}
                     onChange={handleSelectAll}
@@ -514,7 +525,7 @@ const CustomerDatabase = () => {
               {filteredCustomers.map((customer) => (
                 <tr key={customer.id} className="sales-customer-page-table-row">
                   <td>
-                    <input 
+                    <input
                       type="checkbox"
                       checked={selectedRows.includes(customer.id)}
                       onChange={() => handleSelectRow(customer.id)}
@@ -540,7 +551,7 @@ const CustomerDatabase = () => {
                   <td>{customer.createdOn}</td>
                   <td>
                     <div className="sales-customer-page-action-buttons">
-                      <button 
+                      <button
                         className="sales-customer-page-action-btn"
                         onClick={() => handleViewCustomer(customer)}
                         title="View Details"
@@ -591,7 +602,7 @@ const CustomerDatabase = () => {
                 <button className="sales-customer-page-drawer-btn">Edit Customer</button>
                 <button className="sales-customer-page-drawer-btn">Add Follow-Up</button>
                 <button className="sales-customer-page-drawer-btn">Export Profile</button>
-                <button 
+                <button
                   className="sales-customer-page-drawer-close"
                   onClick={() => setIsDrawerOpen(false)}
                 >
@@ -769,7 +780,7 @@ const CustomerDatabase = () => {
           <div className="sales-customer-page-modal" onClick={(e) => e.stopPropagation()}>
             <div className="sales-customer-page-modal-header">
               <h2>Add New Customer</h2>
-              <button 
+              <button
                 className="sales-customer-page-modal-close"
                 onClick={() => setIsAddFormOpen(false)}
               >
@@ -884,15 +895,15 @@ const CustomerDatabase = () => {
 
                 <div className="sales-customer-page-form-group">
                   <label>Notes</label>
-                  <textarea 
-                    rows="3" 
+                  <textarea
+                    rows="3"
                     placeholder="Add any additional notes about the customer..."
                   ></textarea>
                 </div>
 
                 <div className="sales-customer-page-form-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="sales-customer-page-btn-secondary"
                     onClick={() => setIsAddFormOpen(false)}
                   >

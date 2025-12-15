@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../pages-css/Proposals.css';
 
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 // Mock data for proposals
 const mockProposals = [
   {
@@ -133,6 +135,8 @@ const mockProposals = [
 
 const ProposalsManagementPage = () => {
   const [proposals, setProposals] = useState(mockProposals);
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [filterPriority, setFilterPriority] = useState('All');
@@ -166,32 +170,32 @@ const ProposalsManagementPage = () => {
 
   // Filter and search logic
   const filteredProposals = proposals.filter(proposal => {
-    const matchesSearch = 
+    const matchesSearch =
       proposal.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       proposal.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       proposal.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       proposal.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       proposal.phone.includes(searchTerm) ||
       proposal.value.toString().includes(searchTerm);
-    
+
     const matchesStatus = filterStatus === 'All' || proposal.status === filterStatus;
     const matchesPreparedBy = filterPreparedBy === 'All' || proposal.preparedBy === filterPreparedBy;
-    
+
     return matchesSearch && matchesStatus && matchesPreparedBy;
   });
 
   // Sorting logic
   const sortedProposals = [...filteredProposals].sort((a, b) => {
     if (!sortConfig.key) return 0;
-    
+
     let aValue = a[sortConfig.key];
     let bValue = b[sortConfig.key];
-    
+
     if (sortConfig.key === 'value') {
       aValue = parseFloat(aValue);
       bValue = parseFloat(bValue);
     }
-    
+
     if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
     if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
     return 0;
@@ -288,13 +292,13 @@ const ProposalsManagementPage = () => {
       setProposals([...proposals, newProposal]);
       alert('Proposal created successfully!');
     }
-    
+
     setShowCreateModal(false);
     setCurrentPage(1); // Reset to first page to see new proposal
   };
 
   const handleStatusChange = (newStatus) => {
-    const updated = proposals.map(p => 
+    const updated = proposals.map(p =>
       p.id === selectedProposal.id ? { ...p, status: newStatus, lastUpdated: new Date().toISOString().split('T')[0] } : p
     );
     setProposals(updated);
@@ -338,13 +342,21 @@ const ProposalsManagementPage = () => {
       {/* Header */}
       <div className="proposal-page-header">
         <div>
-          <h1 className="proposal-page-title">Proposals</h1>
           <div className="proposal-page-breadcrumb">
             Dashboard &gt; Proposals
           </div>
         </div>
-      </div>
 
+      </div>
+      <div className="page-header-with-filter">
+        <h1 className="proposal-page-title">Proposals</h1>
+
+        <GroupProjectFilter
+          groupValue={groupName}
+          projectValue={projectId}
+          onChange={updateFilters}
+        />
+      </div>
       {/* Action Bar */}
       <div className="proposal-page-action-bar">
         <div className="proposal-page-search-filters">
@@ -355,8 +367,8 @@ const ProposalsManagementPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          
-          <select 
+
+          <select
             className="proposal-page-filter"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -369,7 +381,7 @@ const ProposalsManagementPage = () => {
             <option value="On Hold">On Hold</option>
           </select>
 
-          <select 
+          <select
             className="proposal-page-filter"
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
@@ -380,7 +392,7 @@ const ProposalsManagementPage = () => {
             <option value="Low">Low</option>
           </select>
 
-          <select 
+          <select
             className="proposal-page-filter"
             value={filterPreparedBy}
             onChange={(e) => setFilterPreparedBy(e.target.value)}
@@ -393,25 +405,25 @@ const ProposalsManagementPage = () => {
         </div>
 
         <div className="proposal-page-action-buttons">
-          <button 
+          <button
             className="proposal-page-btn proposal-page-btn-secondary"
             onClick={handleExportPDF}
           >
             Export PDF
           </button>
-          <button 
+          <button
             className="proposal-page-btn proposal-page-btn-secondary"
             onClick={handleExportExcel}
           >
             Export Excel
           </button>
-          <button 
+          <button
             className="proposal-page-btn proposal-page-btn-secondary"
             onClick={() => setShowVersionModal(true)}
           >
             Version History
           </button>
-          <button 
+          <button
             className="proposal-page-btn proposal-page-btn-primary"
             onClick={handleCreateNew}
           >
@@ -462,35 +474,35 @@ const ProposalsManagementPage = () => {
                   <td>{proposal.lastUpdated}</td>
                   <td>
                     <div className="proposal-page-actions">
-                      <button 
+                      <button
                         className="proposal-page-action-btn"
                         onClick={() => handleView(proposal)}
                         title="View"
                       >
                         👁️
                       </button>
-                      <button 
+                      <button
                         className="proposal-page-action-btn"
                         onClick={() => handleEdit(proposal)}
                         title="Edit"
                       >
                         ✏️
                       </button>
-                      <button 
+                      <button
                         className="proposal-page-action-btn"
                         onClick={() => handleDuplicate(proposal)}
                         title="Duplicate"
                       >
                         📋
                       </button>
-                      <button 
+                      <button
                         className="proposal-page-action-btn"
                         onClick={() => handleDownloadProposalPDF(proposal)}
                         title="Download PDF"
                       >
                         📄
                       </button>
-                      <button 
+                      <button
                         className="proposal-page-action-btn proposal-page-action-delete"
                         onClick={() => handleDelete(proposal.id)}
                         title="Delete"
@@ -522,7 +534,7 @@ const ProposalsManagementPage = () => {
           )}
         </div>
         <div className="proposal-page-pagination-controls">
-          <select 
+          <select
             value={rowsPerPage}
             onChange={(e) => {
               setRowsPerPage(Number(e.target.value));
@@ -534,7 +546,7 @@ const ProposalsManagementPage = () => {
             <option value={25}>25 rows</option>
             <option value={50}>50 rows</option>
           </select>
-          <button 
+          <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
             className="proposal-page-pagination-btn"
@@ -544,7 +556,7 @@ const ProposalsManagementPage = () => {
           <span className="proposal-page-pagination-current">
             Page {currentPage} of {totalPages || 1}
           </span>
-          <button 
+          <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages || totalPages === 0}
             className="proposal-page-pagination-btn"
@@ -560,14 +572,14 @@ const ProposalsManagementPage = () => {
           <div className="proposal-page-modal" onClick={(e) => e.stopPropagation()}>
             <div className="proposal-page-modal-header">
               <h2>Proposal Details</h2>
-              <button 
+              <button
                 className="proposal-page-modal-close"
                 onClick={() => setShowViewModal(false)}
               >
                 ×
               </button>
             </div>
-            
+
             <div className="proposal-page-modal-content">
               {/* Proposal Header */}
               <div className="proposal-page-card">
@@ -665,19 +677,19 @@ const ProposalsManagementPage = () => {
 
               {/* Actions */}
               <div className="proposal-page-modal-actions">
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={() => handleEdit(selectedProposal)}
                 >
                   Edit Proposal
                 </button>
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={() => handleDownloadProposalPDF(selectedProposal)}
                 >
                   Download PDF
                 </button>
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={() => {
                     handleDuplicate(selectedProposal);
@@ -686,13 +698,13 @@ const ProposalsManagementPage = () => {
                 >
                   Duplicate
                 </button>
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={handleShareEmail}
                 >
                   Share via Email
                 </button>
-                <select 
+                <select
                   className="proposal-page-status-dropdown"
                   value={selectedProposal.status}
                   onChange={(e) => handleStatusChange(e.target.value)}
@@ -715,32 +727,32 @@ const ProposalsManagementPage = () => {
           <div className="proposal-page-modal proposal-page-modal-large" onClick={(e) => e.stopPropagation()}>
             <div className="proposal-page-modal-header">
               <h2>{isEditMode ? 'Edit Proposal' : 'Create New Proposal'}</h2>
-              <button 
+              <button
                 className="proposal-page-modal-close"
                 onClick={() => setShowCreateModal(false)}
               >
                 ×
               </button>
             </div>
-            
+
             <div className="proposal-page-modal-content">
               <div className="proposal-page-form">
                 <div className="proposal-page-form-row">
                   <div className="proposal-page-form-group">
                     <label>Proposal Title *</label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.title}
-                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="Enter proposal title"
                     />
                   </div>
                   <div className="proposal-page-form-group">
                     <label>Proposal Value (₹) *</label>
-                    <input 
+                    <input
                       type="number"
                       value={formData.value}
-                      onChange={(e) => setFormData({...formData, value: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, value: e.target.value })}
                       placeholder="Enter value"
                     />
                   </div>
@@ -749,19 +761,19 @@ const ProposalsManagementPage = () => {
                 <div className="proposal-page-form-row">
                   <div className="proposal-page-form-group">
                     <label>Client Name *</label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.clientName}
-                      onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                       placeholder="Enter client name"
                     />
                   </div>
                   <div className="proposal-page-form-group">
                     <label>Company Name *</label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                       placeholder="Enter company name"
                     />
                   </div>
@@ -770,19 +782,19 @@ const ProposalsManagementPage = () => {
                 <div className="proposal-page-form-row">
                   <div className="proposal-page-form-group">
                     <label>Email *</label>
-                    <input 
+                    <input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="Enter email"
                     />
                   </div>
                   <div className="proposal-page-form-group">
                     <label>Phone *</label>
-                    <input 
+                    <input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="Enter phone number"
                     />
                   </div>
@@ -790,19 +802,19 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Address</label>
-                  <input 
+                  <input
                     type="text"
                     value={formData.address}
-                    onChange={(e) => setFormData({...formData, address: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     placeholder="Enter address"
                   />
                 </div>
 
                 <div className="proposal-page-form-group">
                   <label>Introduction</label>
-                  <textarea 
+                  <textarea
                     value={formData.introduction}
-                    onChange={(e) => setFormData({...formData, introduction: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, introduction: e.target.value })}
                     placeholder="Enter proposal introduction"
                     rows={3}
                   />
@@ -810,9 +822,9 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Scope of Work</label>
-                  <textarea 
+                  <textarea
                     value={formData.scopeOfWork}
-                    onChange={(e) => setFormData({...formData, scopeOfWork: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, scopeOfWork: e.target.value })}
                     placeholder="Enter scope of work"
                     rows={3}
                   />
@@ -820,9 +832,9 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Deliverables</label>
-                  <textarea 
+                  <textarea
                     value={formData.deliverables}
-                    onChange={(e) => setFormData({...formData, deliverables: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, deliverables: e.target.value })}
                     placeholder="Enter deliverables"
                     rows={3}
                   />
@@ -830,9 +842,9 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Pricing Breakdown</label>
-                  <textarea 
+                  <textarea
                     value={formData.pricingBreakdown}
-                    onChange={(e) => setFormData({...formData, pricingBreakdown: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, pricingBreakdown: e.target.value })}
                     placeholder="Enter pricing breakdown (e.g., Development: ₹10,00,000)"
                     rows={4}
                   />
@@ -840,9 +852,9 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Terms & Conditions</label>
-                  <textarea 
+                  <textarea
                     value={formData.terms}
-                    onChange={(e) => setFormData({...formData, terms: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
                     placeholder="Enter terms and conditions"
                     rows={3}
                   />
@@ -851,9 +863,9 @@ const ProposalsManagementPage = () => {
                 <div className="proposal-page-form-row">
                   <div className="proposal-page-form-group">
                     <label>Prepared By</label>
-                    <select 
+                    <select
                       value={formData.preparedBy}
-                      onChange={(e) => setFormData({...formData, preparedBy: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, preparedBy: e.target.value })}
                     >
                       <option value="">Select member</option>
                       <option value="Anita Sharma">Anita Sharma</option>
@@ -863,7 +875,7 @@ const ProposalsManagementPage = () => {
                   </div>
                   <div className="proposal-page-form-group">
                     <label>Upload Files</label>
-                    <input 
+                    <input
                       type="file"
                       multiple
                       accept=".pdf,.docx,.png,.jpg,.jpeg"
@@ -878,9 +890,9 @@ const ProposalsManagementPage = () => {
 
                 <div className="proposal-page-form-group">
                   <label>Internal Notes</label>
-                  <textarea 
+                  <textarea
                     value={formData.notes}
-                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     placeholder="Add internal notes (not visible to client)"
                     rows={2}
                   />
@@ -888,19 +900,19 @@ const ProposalsManagementPage = () => {
               </div>
 
               <div className="proposal-page-modal-actions">
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={() => handleSubmitProposal('Draft')}
                 >
                   Save as Draft
                 </button>
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-secondary"
                   onClick={handlePreviewPDF}
                 >
                   Preview PDF
                 </button>
-                <button 
+                <button
                   className="proposal-page-btn proposal-page-btn-primary"
                   onClick={() => handleSubmitProposal('Sent')}
                 >
@@ -918,14 +930,14 @@ const ProposalsManagementPage = () => {
           <div className="proposal-page-modal" onClick={(e) => e.stopPropagation()}>
             <div className="proposal-page-modal-header">
               <h2>Version History</h2>
-              <button 
+              <button
                 className="proposal-page-modal-close"
                 onClick={() => setShowVersionModal(false)}
               >
                 ×
               </button>
             </div>
-            
+
             <div className="proposal-page-modal-content">
               <p style={{ marginBottom: '20px', color: '#4a5568' }}>
                 Track all versions and changes made to proposals over time.
@@ -955,7 +967,7 @@ const ProposalsManagementPage = () => {
                     <button className="proposal-page-btn proposal-page-btn-secondary proposal-page-btn-sm">
                       View
                     </button>
-                    <button 
+                    <button
                       className="proposal-page-btn proposal-page-btn-secondary proposal-page-btn-sm"
                       onClick={() => alert('Restore v2 functionality - This would restore this version')}
                     >
@@ -975,7 +987,7 @@ const ProposalsManagementPage = () => {
                     <button className="proposal-page-btn proposal-page-btn-secondary proposal-page-btn-sm">
                       View
                     </button>
-                    <button 
+                    <button
                       className="proposal-page-btn proposal-page-btn-secondary proposal-page-btn-sm"
                       onClick={() => alert('Restore v1 functionality - This would restore this version')}
                     >
@@ -984,10 +996,10 @@ const ProposalsManagementPage = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div style={{ marginTop: '24px', padding: '16px', background: '#edf2f7', borderRadius: '6px' }}>
                 <p style={{ fontSize: '13px', color: '#4a5568', margin: 0 }}>
-                  <strong>Note:</strong> Version history is automatically tracked when proposals are edited. 
+                  <strong>Note:</strong> Version history is automatically tracked when proposals are edited.
                   You can view or restore any previous version at any time.
                 </p>
               </div>

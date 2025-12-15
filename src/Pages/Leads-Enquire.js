@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import '../pages-css/Leads-Enquire.css';
 
+
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 function LeadsEnquiries() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -14,6 +17,7 @@ function LeadsEnquiries() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
 
   // Sample data
   const [leads, setLeads] = useState([
@@ -162,13 +166,13 @@ function LeadsEnquiries() {
 
   // Filter and search logic
   const filteredLeads = leads.filter(lead => {
-    const matchesSearch = 
+    const matchesSearch =
       lead.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.phone.includes(searchTerm) ||
       lead.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
     const matchesPriority = priorityFilter === 'All' || lead.priority === priorityFilter;
     const matchesSource = sourceFilter === 'All' || lead.source === sourceFilter;
@@ -193,9 +197,15 @@ function LeadsEnquiries() {
 
       {/* Page Header */}
       <div className="leads-enquiries-header">
-        <div>
-          <h1 className="leads-enquiries-title">Leads / Enquiries</h1>
-          <p className="leads-enquiries-subtitle">Manage and track all your leads and enquiries</p>
+        
+        <div className="page-header-with-filter">
+                    <h1 className="leads-enquiries-title">Leads / Enquiries</h1>
+
+          <GroupProjectFilter
+            groupValue={groupName}
+            projectValue={projectId}
+            onChange={updateFilters}
+          />
         </div>
       </div>
 
@@ -215,7 +225,7 @@ function LeadsEnquiries() {
         </div>
 
         <div className="leads-enquiries-filters">
-          <select 
+          <select
             className="leads-enquiries-filter-select"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -229,7 +239,7 @@ function LeadsEnquiries() {
             <option value="Closed Lost">Closed Lost</option>
           </select>
 
-          <select 
+          <select
             className="leads-enquiries-filter-select"
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
@@ -240,7 +250,7 @@ function LeadsEnquiries() {
             <option value="Low">Low</option>
           </select>
 
-          <select 
+          <select
             className="leads-enquiries-filter-select"
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
@@ -312,7 +322,7 @@ function LeadsEnquiries() {
                   <td>{lead.lastUpdated}</td>
                   <td>
                     <div className="leads-enquiries-action-buttons-cell">
-                      <button 
+                      <button
                         className="leads-enquiries-action-btn leads-enquiries-action-view"
                         onClick={() => handleView(lead)}
                         title="View"
@@ -322,7 +332,7 @@ function LeadsEnquiries() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       </button>
-                      <button 
+                      <button
                         className="leads-enquiries-action-btn leads-enquiries-action-edit"
                         onClick={() => handleEdit(lead)}
                         title="Edit"
@@ -331,7 +341,7 @@ function LeadsEnquiries() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                       </button>
-                      <button 
+                      <button
                         className="leads-enquiries-action-btn leads-enquiries-action-delete"
                         onClick={() => handleDelete(lead.id)}
                         title="Delete"
@@ -354,7 +364,7 @@ function LeadsEnquiries() {
             Showing {startIndex + 1} to {Math.min(endIndex, filteredLeads.length)} of {filteredLeads.length} entries
           </div>
           <div className="leads-enquiries-pagination-controls">
-            <select 
+            <select
               className="leads-enquiries-rows-select"
               value={rowsPerPage}
               onChange={(e) => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
@@ -364,7 +374,7 @@ function LeadsEnquiries() {
               <option value={50}>50 rows</option>
             </select>
             <div className="leads-enquiries-pagination-buttons">
-              <button 
+              <button
                 className="leads-enquiries-pagination-btn"
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
@@ -374,7 +384,7 @@ function LeadsEnquiries() {
               <span className="leads-enquiries-pagination-current">
                 Page {currentPage} of {totalPages}
               </span>
-              <button 
+              <button
                 className="leads-enquiries-pagination-btn"
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
@@ -408,7 +418,7 @@ function LeadsEnquiries() {
                       type="text"
                       required
                       value={formData.clientName}
-                      onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                     />
                   </div>
                   <div className="leads-enquiries-form-group">
@@ -417,7 +427,7 @@ function LeadsEnquiries() {
                       type="text"
                       required
                       value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                     />
                   </div>
                   <div className="leads-enquiries-form-group">
@@ -426,7 +436,7 @@ function LeadsEnquiries() {
                       type="email"
                       required
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                   <div className="leads-enquiries-form-group">
@@ -435,7 +445,7 @@ function LeadsEnquiries() {
                       type="tel"
                       required
                       value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
                   </div>
                 </div>
@@ -449,7 +459,7 @@ function LeadsEnquiries() {
                     <select
                       required
                       value={formData.source}
-                      onChange={(e) => setFormData({...formData, source: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                     >
                       <option value="Website">Website</option>
                       <option value="Referral">Referral</option>
@@ -463,7 +473,7 @@ function LeadsEnquiries() {
                     <select
                       required
                       value={formData.priority}
-                      onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                     >
                       <option value="High">High</option>
                       <option value="Medium">Medium</option>
@@ -475,7 +485,7 @@ function LeadsEnquiries() {
                     <select
                       required
                       value={formData.status}
-                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     >
                       <option value="New">New</option>
                       <option value="Contacted">Contacted</option>
@@ -490,7 +500,7 @@ function LeadsEnquiries() {
                     <select
                       required
                       value={formData.assignedTo}
-                      onChange={(e) => setFormData({...formData, assignedTo: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
                     >
                       <option value="">Select Member</option>
                       <option value="Sarah M.">Sarah M.</option>
@@ -505,7 +515,7 @@ function LeadsEnquiries() {
                     required
                     rows={4}
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Describe the client's requirements..."
                   />
                 </div>

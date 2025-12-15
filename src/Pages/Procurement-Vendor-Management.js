@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../pages-css/Procurement-Vendor-Management.css';
 
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 const ProcurementManagement = () => {
   const [activeView, setActiveView] = useState('list');
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -9,6 +11,7 @@ const ProcurementManagement = () => {
   const [vendorTypeFilter, setVendorTypeFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
 
   const vendors = [
     {
@@ -120,12 +123,12 @@ const ProcurementManagement = () => {
 
   const filteredVendors = vendors.filter(vendor => {
     const matchesSearch = vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.contactPerson.toLowerCase().includes(searchTerm.toLowerCase());
+      vendor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      vendor.contactPerson.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || vendor.category === categoryFilter;
     const matchesType = vendorTypeFilter === 'all' || vendor.vendorType === vendorTypeFilter;
     const matchesRating = ratingFilter === 'all' || Math.floor(vendor.rating) === parseInt(ratingFilter);
-    
+
     return matchesSearch && matchesCategory && matchesType && matchesRating;
   });
 
@@ -152,15 +155,22 @@ const ProcurementManagement = () => {
 
   return (
     <div className="procurement-page">
-      
+
 
       <div className="main-container">
-        
+
 
         <main className="content-area">
           <div className="breadcrumb">Dashboard &gt; Procurement</div>
-          <h1 className="page-title">Procurement & Vendor Management</h1>
+          <div className="page-header-with-filter">
+            <h1 className="page-title">Procurement & Vendor Management</h1>
 
+            <GroupProjectFilter
+              groupValue={groupName}
+              projectValue={projectId}
+              onChange={updateFilters}
+            />
+          </div>
           {activeView === 'list' && (
             <>
               <div className="action-bar">
@@ -172,7 +182,7 @@ const ProcurementManagement = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  
+
                   <select className="filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
                     <option value="all">All Categories</option>
                     <option value="Solar Modules">Solar Modules</option>
@@ -227,7 +237,7 @@ const ProcurementManagement = () => {
                   <h2>Vendor List</h2>
                   <span className="table-count">{filteredVendors.length} vendors found</span>
                 </div>
-                
+
                 <div className="table-wrapper">
                   <table className="data-table">
                     <thead>
@@ -451,7 +461,7 @@ const ProcurementManagement = () => {
               <button className="btn-back" onClick={() => setActiveView('list')}>
                 ← Back to List
               </button>
-              
+
               <div className="form-card">
                 <h2>Add New Vendor</h2>
                 <div className="vendor-form">
@@ -556,7 +566,7 @@ const ProcurementManagement = () => {
               <button className="btn-back" onClick={() => setActiveView('list')}>
                 ← Back to List
               </button>
-              
+
               <div className="form-card">
                 <h2>Add Purchase Entry</h2>
                 <div className="vendor-form">

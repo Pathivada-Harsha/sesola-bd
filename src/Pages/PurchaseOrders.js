@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Download, Plus, X, Edit2, Eye, Check, XCircle, FileText, Upload, Calendar, DollarSign, TrendingUp, Clock, Package, CheckCircle, Truck, AlertCircle, ShoppingCart } from 'lucide-react';
 import '../pages-css/PurchaseOrders.css';
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
+
 
 const PurchaseOrders = () => {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [selectedPOs, setSelectedPOs] = useState([]);
-  const [filters, setFilters] = useState({
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();  const [filters, setFilters] = useState({
     search: '',
     status: 'all',
     vendor: 'all',
@@ -257,7 +260,7 @@ const PurchaseOrders = () => {
 
   useEffect(() => {
     setPurchaseOrders(mockPurchaseOrders);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Calculate KPIs
@@ -273,8 +276,8 @@ const PurchaseOrders = () => {
   // Filter purchase orders
   const filteredPOs = purchaseOrders.filter(po => {
     if (filters.search && !po.id.toLowerCase().includes(filters.search.toLowerCase()) &&
-        !po.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
-        (!po.linkedQuotationId || !po.linkedQuotationId.toLowerCase().includes(filters.search.toLowerCase()))) {
+      !po.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
+      (!po.linkedQuotationId || !po.linkedQuotationId.toLowerCase().includes(filters.search.toLowerCase()))) {
       return false;
     }
     if (filters.status !== 'all' && po.orderStatus !== filters.status) return false;
@@ -420,25 +423,25 @@ const PurchaseOrders = () => {
       alert('Please fill in all required fields');
       return;
     }
-    
+
     const subtotal = formData.items.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
     const taxAmount = formData.items.reduce((sum, item) => {
       const lineSubtotal = item.qty * item.unitPrice;
       return sum + (lineSubtotal * item.tax / 100);
     }, 0);
     const totalValue = subtotal + taxAmount + (formData.shippingCost || 0);
-    
+
     // Calculate delivery status
     const totalItems = formData.items.reduce((sum, item) => sum + item.qty, 0);
     const deliveredItems = formData.items.reduce((sum, item) => sum + (item.delivered || 0), 0);
     const pendingItems = totalItems - deliveredItems;
-    
+
     if (editMode) {
       setPurchaseOrders(prev => prev.map(po =>
-        po.id === formData.id ? { 
-          ...formData, 
-          subtotal, 
-          taxAmount, 
+        po.id === formData.id ? {
+          ...formData,
+          subtotal,
+          taxAmount,
           totalValue,
           items: formData.items.map(item => ({
             ...item,
@@ -495,9 +498,18 @@ const PurchaseOrders = () => {
         <div className="procurement-purchase-orders-breadcrumb">
           Dashboard &gt; Procurement &gt; Purchase Orders
         </div>
-        <h1 className="procurement-purchase-orders-title">
-          Purchase Orders <span className="procurement-purchase-orders-count">({purchaseOrders.length})</span>
-        </h1>
+        <div className="page-header-with-filter">
+          <h1 className="procurement-purchase-orders-title">
+            Purchase Orders <span className="procurement-purchase-orders-count">({purchaseOrders.length})</span>
+          </h1>
+          <GroupProjectFilter
+            groupValue={groupName}
+            projectValue={projectId}
+            onChange={updateFilters}
+          />
+
+
+        </div>
       </div>
 
       {/* Action Bar */}
@@ -510,7 +522,7 @@ const PurchaseOrders = () => {
             value={filters.search}
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
-          
+
           <select
             className="procurement-purchase-orders-filter"
             value={filters.status}
@@ -857,7 +869,7 @@ const PurchaseOrders = () => {
               {/* Delivery Information */}
               <div className="procurement-purchase-orders-drawer-section">
                 <h3>Delivery Information</h3>
-                
+
                 {/* Delivery Status Summary */}
                 {selectedPO.deliveryStatus && (
                   <div className="procurement-purchase-orders-delivery-summary">
@@ -872,7 +884,7 @@ const PurchaseOrders = () => {
                         <div className="procurement-purchase-orders-delivery-stat-label">Total Items</div>
                       </div>
                     </div>
-                    
+
                     <div className="procurement-purchase-orders-delivery-stat">
                       <div className="procurement-purchase-orders-delivery-stat-icon procurement-purchase-orders-stat-delivered">
                         <CheckCircle size={24} />
@@ -884,7 +896,7 @@ const PurchaseOrders = () => {
                         <div className="procurement-purchase-orders-delivery-stat-label">Delivered</div>
                       </div>
                     </div>
-                    
+
                     <div className="procurement-purchase-orders-delivery-stat">
                       <div className="procurement-purchase-orders-delivery-stat-icon procurement-purchase-orders-stat-pending">
                         <Clock size={24} />
@@ -896,14 +908,14 @@ const PurchaseOrders = () => {
                         <div className="procurement-purchase-orders-delivery-stat-label">Pending</div>
                       </div>
                     </div>
-                    
+
                     {/* Progress Bar */}
                     <div className="procurement-purchase-orders-delivery-progress">
                       <div className="procurement-purchase-orders-progress-bar">
-                        <div 
+                        <div
                           className="procurement-purchase-orders-progress-fill"
-                          style={{ 
-                            width: `${(selectedPO.deliveryStatus.deliveredItems / selectedPO.deliveryStatus.totalItems * 100)}%` 
+                          style={{
+                            width: `${(selectedPO.deliveryStatus.deliveredItems / selectedPO.deliveryStatus.totalItems * 100)}%`
                           }}
                         ></div>
                       </div>
@@ -1195,8 +1207,8 @@ const PurchaseOrders = () => {
                       <Clock size={20} />
                       <div>
                         <div className="procurement-purchase-orders-edit-stat-value">
-                          {formData.items.reduce((sum, item) => sum + item.qty, 0) - 
-                           formData.items.reduce((sum, item) => sum + (item.delivered || 0), 0)}
+                          {formData.items.reduce((sum, item) => sum + item.qty, 0) -
+                            formData.items.reduce((sum, item) => sum + (item.delivered || 0), 0)}
                         </div>
                         <div className="procurement-purchase-orders-edit-stat-label">Pending</div>
                       </div>

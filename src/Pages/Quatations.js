@@ -1,12 +1,15 @@
 // QuotationsPage.jsx
 import React, { useState, useMemo, useEffect } from "react";
 import "../pages-css/Quatations.css";
-
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 // If you have Navbar / Sidebar components in your project, uncomment and adjust paths:
 // import Navbar from "../components/Navbar";
 // import Sidebar from "../components/Sidebar";
 
 export default function QuotationsPage() {
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+
   const sample = [
     {
       id: "Q-2025-001",
@@ -129,8 +132,16 @@ export default function QuotationsPage() {
 
         <main className="quatations-page-main">
           <div className="quatations-page-header">
-            <h1 className="quatations-page-title">Quotations</h1>
             <nav className="quatations-page-breadcrumb">Dashboard &gt; Quotations</nav>
+          </div>
+          <div className="page-header-with-filter">
+            <h1 className="quatations-page-title">Quotations</h1>
+
+            <GroupProjectFilter
+              groupValue={groupName}
+              projectValue={projectId}
+              onChange={updateFilters}
+            />
           </div>
 
           <section className="quatations-page-actions card">

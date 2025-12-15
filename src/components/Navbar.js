@@ -155,6 +155,7 @@ function Navbar({ onMenuClick }) {
             {showProfileMenu && (
               <div className="dropdown-menu">
                 <Link to="/profile" className="dropdown-item">Profile</Link>
+                <Link to="/users" className="dropdown-item">Users</Link>
                 <Link to="/settings" className="dropdown-item">Settings</Link>
                 <hr className="dropdown-divider" />
 

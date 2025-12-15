@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Download, Plus, X, Edit2, Eye, Check, XCircle, FileText, Upload, Calendar, DollarSign, TrendingUp, Clock, Package, CheckCircle, Star, AlertCircle, ShoppingCart } from 'lucide-react';
 import '../pages-css/Procurement-Quatation-Recieved.css';
-
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 const QuotationsReceived = () => {
   const [quotations, setQuotations] = useState([]);
   const [selectedQuotations, setSelectedQuotations] = useState([]);
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
@@ -179,7 +182,7 @@ const QuotationsReceived = () => {
 
   useEffect(() => {
     setQuotations(mockQuotations);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Calculate KPIs
@@ -194,8 +197,8 @@ const QuotationsReceived = () => {
   // Filter quotations
   const filteredQuotations = quotations.filter(q => {
     if (filters.search && !q.id.toLowerCase().includes(filters.search.toLowerCase()) &&
-        !q.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
-        !q.rfqId.toLowerCase().includes(filters.search.toLowerCase())) {
+      !q.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
+      !q.rfqId.toLowerCase().includes(filters.search.toLowerCase())) {
       return false;
     }
     if (filters.status !== 'all' && q.status !== filters.status) return false;
@@ -354,7 +357,7 @@ const QuotationsReceived = () => {
   // Calculate quotation totals for display
   const calculateQuotationTotal = () => {
     if (!quotationFormData) return { subtotal: 0, taxAmount: 0, total: 0 };
-    
+
     const subtotal = quotationFormData.items.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
     const itemsWithTotals = quotationFormData.items.map(item => {
       const lineSubtotal = item.qty * item.unitPrice;
@@ -366,7 +369,7 @@ const QuotationsReceived = () => {
       return sum + (lineSubtotal * item.tax / 100);
     }, 0);
     const total = subtotal + taxAmount;
-    
+
     return { subtotal, taxAmount, total, itemsWithTotals };
   };
 
@@ -430,9 +433,17 @@ const QuotationsReceived = () => {
         <div className="procurement-quotation-received-breadcrumb">
           Dashboard &gt; Procurement &gt; Quotations Received
         </div>
-        <h1 className="procurement-quotation-received-title">
-          Quotations Received <span className="procurement-quotation-received-count">({quotations.length})</span>
-        </h1>
+
+        <div className="page-header-with-filter">
+          <h1 className="procurement-quotation-received-title">
+            Quotations Received <span className="procurement-quotation-received-count">({quotations.length})</span>
+          </h1>
+          <GroupProjectFilter
+            groupValue={groupName}
+            projectValue={projectId}
+            onChange={updateFilters}
+          />
+        </div>
       </div>
 
       {/* Action Bar */}
@@ -445,7 +456,7 @@ const QuotationsReceived = () => {
             value={filters.search}
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
-          
+
           <select
             className="procurement-quotation-received-filter"
             value={filters.status}

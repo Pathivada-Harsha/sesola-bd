@@ -23,7 +23,8 @@ import SalesOrder from "./Pages/Sales-Order.js";
 import PurchaseOrders from './Pages/PurchaseOrders.js';
 import BillsRecieved from "./Pages/Bills-Recieved.js";
 import Reports from "./Pages/Reports.js";
-import SolarProfile from "./Pages/Solarproposaleditor.js"
+import SolarProfile from "./Pages/Solarproposaleditor.js";
+import Users from "./Pages/UsersPage.js";
 import './App.css';
 
 function AppWrapper() {
@@ -94,7 +95,7 @@ function AppShell({ hideShell }) {
           <Route path="/profile" element={<Profile />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/solarprofile" element={<SolarProfile />} />
-
+          <Route path="/users" element={<Users />} />
         </Routes>
       </main>
     </div>

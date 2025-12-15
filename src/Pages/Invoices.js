@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../pages-css/Invoices.css';
-
+        import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 // Sample data
 const sampleInvoices = [
   {
@@ -152,7 +153,7 @@ const InvoicesManagementPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
+ const { groupName, projectId, updateFilters } = useGroupProjectFilters();
   // Form states
   const [formData, setFormData] = useState({
     invoiceTitle: '',
@@ -351,7 +352,7 @@ const InvoicesManagementPage = () => {
 
     const updatedInvoice = { ...selectedInvoice };
     updatedInvoice.payments = [...(updatedInvoice.payments || []), newPayment];
-    
+
     const totalPaid = updatedInvoice.payments.reduce((sum, p) => sum + p.amount, 0);
     const balanceDue = updatedInvoice.totalPayable - totalPaid;
 
@@ -422,11 +423,16 @@ const InvoicesManagementPage = () => {
         <span className="Invoices-page-current">Invoices</span>
       </div>
 
-      {/* Header */}
-      <div className="Invoices-page-header">
-        <h1 className="Invoices-page-title">Invoices</h1>
-      </div>
 
+      <div className="page-header-with-filter">
+        <h1 className="Invoices-page-title">Invoices</h1>
+
+        <GroupProjectFilter
+          groupValue={groupName}
+          projectValue={projectId}
+          onChange={updateFilters}
+        />
+      </div>
       {/* Action Bar */}
       <div className="Invoices-page-action-bar">
         <div className="Invoices-page-search-filters">
@@ -437,7 +443,7 @@ const InvoicesManagementPage = () => {
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          
+
           <select
             className="Invoices-page-filter"
             value={filterStatus}
@@ -540,28 +546,28 @@ const InvoicesManagementPage = () => {
                 <td>{invoice.preparedBy}</td>
                 <td>
                   <div className="Invoices-page-action-buttons">
-                    <button 
+                    <button
                       className="Invoices-page-action-btn Invoices-page-btn-view"
                       onClick={() => handleViewInvoice(invoice)}
                       title="View"
                     >
                       👁
                     </button>
-                    <button 
+                    <button
                       className="Invoices-page-action-btn Invoices-page-btn-edit"
                       onClick={() => handleEditInvoice(invoice)}
                       title="Edit"
                     >
                       ✏️
                     </button>
-                    <button 
+                    <button
                       className="Invoices-page-action-btn Invoices-page-btn-payment"
                       onClick={() => handleRecordPayment(invoice)}
                       title="Record Payment"
                     >
                       💰
                     </button>
-                    <button 
+                    <button
                       className="Invoices-page-action-btn Invoices-page-btn-delete"
                       onClick={() => handleDeleteInvoice(invoice.id)}
                       title="Delete"
@@ -582,7 +588,7 @@ const InvoicesManagementPage = () => {
           Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredInvoices.length)} of {filteredInvoices.length} invoices
         </div>
         <div className="Invoices-page-pagination-controls">
-          <button 
+          <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
             className="Invoices-page-pagination-btn"
@@ -590,7 +596,7 @@ const InvoicesManagementPage = () => {
             Previous
           </button>
           <span className="Invoices-page-pagination-current">Page {currentPage} of {totalPages}</span>
-          <button 
+          <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
             className="Invoices-page-pagination-btn"
@@ -608,7 +614,7 @@ const InvoicesManagementPage = () => {
               <h2>Invoice Details</h2>
               <button className="Invoices-page-modal-close" onClick={() => setShowInvoiceModal(false)}>×</button>
             </div>
-            
+
             <div className="Invoices-page-modal-body">
               <div className="Invoices-page-invoice-view">
                 {/* Header Section */}
@@ -768,7 +774,7 @@ const InvoicesManagementPage = () => {
               <h2>{editMode ? 'Edit Invoice' : 'Create New Invoice'}</h2>
               <button className="Invoices-page-modal-close" onClick={() => setShowCreateModal(false)}>×</button>
             </div>
-            
+
             <div className="Invoices-page-modal-body">
               <div className="Invoices-page-form">
                 {/* Invoice Details */}
@@ -780,7 +786,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="text"
                         value={formData.invoiceTitle}
-                        onChange={(e) => setFormData({...formData, invoiceTitle: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, invoiceTitle: e.target.value })}
                         placeholder="e.g., Website Development Services"
                       />
                     </div>
@@ -789,7 +795,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="text"
                         value={formData.quotationRef}
-                        onChange={(e) => setFormData({...formData, quotationRef: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, quotationRef: e.target.value })}
                         placeholder="QUO-2024-XXX"
                       />
                     </div>
@@ -798,7 +804,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="date"
                         value={formData.invoiceDate}
-                        onChange={(e) => setFormData({...formData, invoiceDate: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, invoiceDate: e.target.value })}
                       />
                     </div>
                     <div className="Invoices-page-form-group">
@@ -806,7 +812,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="date"
                         value={formData.dueDate}
-                        onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
                       />
                     </div>
                   </div>
@@ -821,7 +827,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="text"
                         value={formData.clientName}
-                        onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                         placeholder="John Doe"
                       />
                     </div>
@@ -830,7 +836,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="text"
                         value={formData.companyName}
-                        onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                         placeholder="Company Pvt Ltd"
                       />
                     </div>
@@ -839,7 +845,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="email@company.com"
                       />
                     </div>
@@ -848,7 +854,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+91 99999 99999"
                       />
                     </div>
@@ -856,7 +862,7 @@ const InvoicesManagementPage = () => {
                       <label>Billing Address*</label>
                       <textarea
                         value={formData.billingAddress}
-                        onChange={(e) => setFormData({...formData, billingAddress: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, billingAddress: e.target.value })}
                         placeholder="Full billing address"
                         rows="2"
                       />
@@ -866,7 +872,7 @@ const InvoicesManagementPage = () => {
                       <input
                         type="text"
                         value={formData.gstNumber}
-                        onChange={(e) => setFormData({...formData, gstNumber: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, gstNumber: e.target.value })}
                         placeholder="27AABCU9603R1ZM"
                       />
                     </div>
@@ -879,7 +885,7 @@ const InvoicesManagementPage = () => {
                     <h3>Invoice Items</h3>
                     <button className="Invoices-page-btn-secondary" onClick={addItem}>+ Add Item</button>
                   </div>
-                  
+
                   {formData.items.map((item, index) => (
                     <div key={index} className="Invoices-page-item-row">
                       <div className="Invoices-page-form-grid Invoices-page-item-grid">
@@ -974,7 +980,7 @@ const InvoicesManagementPage = () => {
                     <label>Terms & Conditions</label>
                     <textarea
                       value={formData.termsConditions}
-                      onChange={(e) => setFormData({...formData, termsConditions: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, termsConditions: e.target.value })}
                       placeholder="Payment terms, conditions, etc."
                       rows="3"
                     />
@@ -983,7 +989,7 @@ const InvoicesManagementPage = () => {
                     <label>Notes</label>
                     <textarea
                       value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                       placeholder="Additional notes for the client"
                       rows="2"
                     />
@@ -1012,7 +1018,7 @@ const InvoicesManagementPage = () => {
               <h2>Record Payment</h2>
               <button className="Invoices-page-modal-close" onClick={() => setShowPaymentModal(false)}>×</button>
             </div>
-            
+
             <div className="Invoices-page-modal-body">
               <div className="Invoices-page-payment-summary-box">
                 <div className="Invoices-page-payment-detail">
@@ -1043,7 +1049,7 @@ const InvoicesManagementPage = () => {
                   <input
                     type="date"
                     value={paymentData.date}
-                    onChange={(e) => setPaymentData({...paymentData, date: e.target.value})}
+                    onChange={(e) => setPaymentData({ ...paymentData, date: e.target.value })}
                   />
                 </div>
                 <div className="Invoices-page-form-group">
@@ -1051,7 +1057,7 @@ const InvoicesManagementPage = () => {
                   <input
                     type="number"
                     value={paymentData.amount}
-                    onChange={(e) => setPaymentData({...paymentData, amount: e.target.value})}
+                    onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
                     min="0"
                     placeholder="0"
                   />
@@ -1060,7 +1066,7 @@ const InvoicesManagementPage = () => {
                   <label>Payment Method*</label>
                   <select
                     value={paymentData.method}
-                    onChange={(e) => setPaymentData({...paymentData, method: e.target.value})}
+                    onChange={(e) => setPaymentData({ ...paymentData, method: e.target.value })}
                   >
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="UPI">UPI</option>
@@ -1073,7 +1079,7 @@ const InvoicesManagementPage = () => {
                   <label>Notes</label>
                   <textarea
                     value={paymentData.notes}
-                    onChange={(e) => setPaymentData({...paymentData, notes: e.target.value})}
+                    onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
                     placeholder="Transaction reference, notes, etc."
                     rows="3"
                   />

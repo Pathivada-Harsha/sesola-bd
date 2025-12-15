@@ -2,10 +2,13 @@
 import React, { useState } from "react";
 import "../pages-css/Client-dashboard.css";
 
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
+
 export default function ClientDashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedLead, setSelectedLead] = useState(null);
-
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
   // Mock data (replace with real data from API)
   const client = {
     name: "ABC Industries",
@@ -294,6 +297,7 @@ export default function ClientDashboardPage() {
 
   return (
     <div className="Client-Dashboard-page-root">
+      
       <div className="Client-Dashboard-page-header">
         <div className="Client-Dashboard-page-avatar">{client.avatarUrl ? <img src={client.avatarUrl} alt="avatar" /> : client.name.charAt(0)}</div>
         <div className="Client-Dashboard-page-client-info">

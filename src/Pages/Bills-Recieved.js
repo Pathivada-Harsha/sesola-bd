@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Download, Plus, X, Edit2, Eye, Check, XCircle, FileText, Upload, Calendar, DollarSign, TrendingUp, Clock, Package, CheckCircle, CreditCard, Link as LinkIcon, Trash2, AlertCircle } from 'lucide-react';
 import '../pages-css/Bills-Recieved.css';
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 
 const BillsReceived = () => {
   const [bills, setBills] = useState([]);
   const [selectedBills, setSelectedBills] = useState([]);
-  const [filters, setFilters] = useState({
+
+  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+      const [filters, setFilters] = useState({
     search: '',
     paymentStatus: 'all',
     vendor: 'all',
@@ -170,7 +174,7 @@ const BillsReceived = () => {
 
   useEffect(() => {
     setBills(mockBills);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Calculate KPIs
@@ -189,8 +193,8 @@ const BillsReceived = () => {
   // Filter bills
   const filteredBills = bills.filter(bill => {
     if (filters.search && !bill.id.toLowerCase().includes(filters.search.toLowerCase()) &&
-        !bill.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
-        (!bill.linkedPOId || !bill.linkedPOId.toLowerCase().includes(filters.search.toLowerCase()))) {
+      !bill.vendor.toLowerCase().includes(filters.search.toLowerCase()) &&
+      (!bill.linkedPOId || !bill.linkedPOId.toLowerCase().includes(filters.search.toLowerCase()))) {
       return false;
     }
     if (filters.paymentStatus !== 'all' && bill.paymentStatus !== filters.paymentStatus) return false;
@@ -282,7 +286,7 @@ const BillsReceived = () => {
         const newPaidAmount = bill.paidAmount + paymentAmount;
         const newBalanceAmount = bill.amount - newPaidAmount;
         const newPaymentStatus = newBalanceAmount === 0 ? 'Paid' : 'Partially Paid';
-        
+
         return {
           ...bill,
           paidAmount: newPaidAmount,
@@ -428,13 +432,23 @@ const BillsReceived = () => {
   return (
     <div className="procurement-bills-received-container">
       {/* Header */}
-      <div className="procurement-bills-received-header">
+      <div className="procurement-bills-received-header ">
         <div className="procurement-bills-received-breadcrumb">
           Dashboard &gt; Procurement &gt; Bills Received
         </div>
-        <h1 className="procurement-bills-received-title">
-          Bills Received <span className="procurement-bills-received-count">({bills.length})</span>
-        </h1>
+        <div className="page-header-with-filter">
+          <h1 className="procurement-bills-received-title">
+            Bills Received
+            {/* <span className="procurement-bills-received-count">({bills.length})</span> */}
+          </h1>
+          <GroupProjectFilter
+            groupValue={groupName}
+            projectValue={projectId}
+            onChange={updateFilters}
+          />
+        </div>
+
+
       </div>
 
       {/* Action Bar */}
@@ -447,7 +461,7 @@ const BillsReceived = () => {
             value={filters.search}
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
-          
+
           <select
             className="procurement-bills-received-filter"
             value={filters.paymentStatus}

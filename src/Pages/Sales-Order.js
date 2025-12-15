@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import '../pages-css/Sales-Order.css';
 import { FiEye, FiEdit, FiFileText, FiPlus } from 'react-icons/fi';
 
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 /* --------------------- mockOrders (copied from your data) --------------------- */
 const mockOrders = [
   {
@@ -217,17 +219,17 @@ const AddOrderModal = ({ onClose, onCreate }) => {
     assignedTo: ''
   });
 
-  function update(k, v){ setForm(f => ({ ...f, [k]: v })); }
+  function update(k, v) { setForm(f => ({ ...f, [k]: v })); }
 
-  function submit(e){
+  function submit(e) {
     e.preventDefault();
-    if(!form.customerName || !form.orderDate || !form.orderValue){
+    if (!form.customerName || !form.orderDate || !form.orderValue) {
       alert('Please provide at least Customer name, Order date and Order value.');
       return;
     }
     const newOrder = {
-      id: 'SO-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*900 + 100),
-      customerId: 'CUST-' + Math.floor(Math.random()*900 + 100),
+      id: 'SO-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 900 + 100),
+      customerId: 'CUST-' + Math.floor(Math.random() * 900 + 100),
       customerName: form.customerName,
       proposalId: null,
       orderDate: form.orderDate,
@@ -253,7 +255,7 @@ const AddOrderModal = ({ onClose, onCreate }) => {
 
   return (
     <div className="sales-salesorder-modal-overlay" onClick={onClose}>
-      <div className="sales-salesorder-modal" onClick={(e)=>e.stopPropagation()}>
+      <div className="sales-salesorder-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sales-salesorder-modal-header">
           <h3>Create New Sales Order</h3>
           <div>
@@ -265,37 +267,37 @@ const AddOrderModal = ({ onClose, onCreate }) => {
           <form onSubmit={submit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <label>
               Customer Name
-              <input type="text" value={form.customerName} onChange={e=>update('customerName', e.target.value)} />
+              <input type="text" value={form.customerName} onChange={e => update('customerName', e.target.value)} />
             </label>
 
             <label>
               Assigned To
-              <input type="text" value={form.assignedTo} onChange={e=>update('assignedTo', e.target.value)} />
+              <input type="text" value={form.assignedTo} onChange={e => update('assignedTo', e.target.value)} />
             </label>
 
             <label>
               Order Date
-              <input type="date" value={form.orderDate} onChange={e=>update('orderDate', e.target.value)} />
+              <input type="date" value={form.orderDate} onChange={e => update('orderDate', e.target.value)} />
             </label>
 
             <label>
               Delivery Date
-              <input type="date" value={form.deliveryDate} onChange={e=>update('deliveryDate', e.target.value)} />
+              <input type="date" value={form.deliveryDate} onChange={e => update('deliveryDate', e.target.value)} />
             </label>
 
             <label>
               Order Value (₹)
-              <input type="number" value={form.orderValue} onChange={e=>update('orderValue', e.target.value)} />
+              <input type="number" value={form.orderValue} onChange={e => update('orderValue', e.target.value)} />
             </label>
 
             <label>
               Items Count
-              <input type="number" value={form.itemsCount} onChange={e=>update('itemsCount', e.target.value)} min="1" />
+              <input type="number" value={form.itemsCount} onChange={e => update('itemsCount', e.target.value)} min="1" />
             </label>
 
             <label>
               Order Status
-              <select value={form.orderStatus} onChange={e=>update('orderStatus', e.target.value)}>
+              <select value={form.orderStatus} onChange={e => update('orderStatus', e.target.value)}>
                 <option>Draft</option>
                 <option>Confirmed</option>
                 <option>Shipped</option>
@@ -306,7 +308,7 @@ const AddOrderModal = ({ onClose, onCreate }) => {
 
             <label>
               Payment Status
-              <select value={form.paymentStatus} onChange={e=>update('paymentStatus', e.target.value)}>
+              <select value={form.paymentStatus} onChange={e => update('paymentStatus', e.target.value)}>
                 <option>Pending</option>
                 <option>Partially Paid</option>
                 <option>Paid</option>
@@ -336,18 +338,18 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
 
   if (!order) return null;
 
-  function updateField(k, v){
+  function updateField(k, v) {
     setDraft(d => ({ ...d, [k]: v }));
   }
 
-  function saveChanges(){
+  function saveChanges() {
     onSave(draft);
     setEditing(false);
   }
 
   return (
     <div className="sales-salesorder-drawer-overlay" onClick={onClose}>
-      <div className="sales-salesorder-drawer" onClick={(e)=>e.stopPropagation()}>
+      <div className="sales-salesorder-drawer" onClick={(e) => e.stopPropagation()}>
         <div className="sales-salesorder-drawer-header">
           <div>
             <h2>{order.id}</h2>
@@ -358,7 +360,7 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
           </div>
 
           <div style={{ display: 'flex', gap: 8 }}>
-            {!editing && <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={()=>setEditing(true)}><FiEdit /> Edit</button>}
+            {!editing && <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={() => setEditing(true)}><FiEdit /> Edit</button>}
             {editing && <button className="sales-salesorder-btn sales-salesorder-btn-primary" onClick={saveChanges}>Save</button>}
             <button className="sales-salesorder-close-btn" onClick={onClose}>×</button>
           </div>
@@ -372,20 +374,20 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Customer:</span>
                 <span className="sales-salesorder-detail-value">
-                  {editing ? <input value={draft.customerName} onChange={e=>updateField('customerName', e.target.value)} /> : draft.customerName}
+                  {editing ? <input value={draft.customerName} onChange={e => updateField('customerName', e.target.value)} /> : draft.customerName}
                 </span>
               </div>
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Contact:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.contact || ''} onChange={e=>setDraft(d=>({...d, customer: {...d.customer, contact: e.target.value}}))} /> : (draft.customer?.contact || '—')}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.contact || ''} onChange={e => setDraft(d => ({ ...d, customer: { ...d.customer, contact: e.target.value } }))} /> : (draft.customer?.contact || '—')}</span>
               </div>
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Address:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.address || ''} onChange={e=>setDraft(d=>({...d, customer: {...d.customer, address: e.target.value}}))} /> : (draft.customer?.address || '—')}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.address || ''} onChange={e => setDraft(d => ({ ...d, customer: { ...d.customer, address: e.target.value } }))} /> : (draft.customer?.address || '—')}</span>
               </div>
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">GST:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.gst || ''} onChange={e=>setDraft(d=>({...d, customer: {...d.customer, gst: e.target.value}}))} /> : (draft.customer?.gst || '—')}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.customer?.gst || ''} onChange={e => setDraft(d => ({ ...d, customer: { ...d.customer, gst: e.target.value } }))} /> : (draft.customer?.gst || '—')}</span>
               </div>
             </div>
           </div>
@@ -396,20 +398,20 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
             <div className="sales-salesorder-detail-card">
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Order Date:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input type="date" value={draft.orderDate} onChange={e=>updateField('orderDate', e.target.value)} /> : draft.orderDate}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input type="date" value={draft.orderDate} onChange={e => updateField('orderDate', e.target.value)} /> : draft.orderDate}</span>
               </div>
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Delivery Date:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input type="date" value={draft.deliveryDate} onChange={e=>updateField('deliveryDate', e.target.value)} /> : draft.deliveryDate}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input type="date" value={draft.deliveryDate} onChange={e => updateField('deliveryDate', e.target.value)} /> : draft.deliveryDate}</span>
               </div>
               <div className="sales-salesorder-detail-row">
                 <span className="sales-salesorder-detail-label">Assigned To:</span>
-                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.assignedTo} onChange={e=>updateField('assignedTo', e.target.value)} /> : draft.assignedTo}</span>
+                <span className="sales-salesorder-detail-value">{editing ? <input value={draft.assignedTo} onChange={e => updateField('assignedTo', e.target.value)} /> : draft.assignedTo}</span>
               </div>
               {draft.proposalId && (
                 <div className="sales-salesorder-detail-row">
                   <span className="sales-salesorder-detail-label">Linked Proposal:</span>
-                  <span className="sales-salesorder-detail-value">{editing ? <input value={draft.proposalId} onChange={e=>updateField('proposalId', e.target.value)} /> : draft.proposalId}</span>
+                  <span className="sales-salesorder-detail-value">{editing ? <input value={draft.proposalId} onChange={e => updateField('proposalId', e.target.value)} /> : draft.proposalId}</span>
                 </div>
               )}
             </div>
@@ -477,7 +479,7 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
             <div className="sales-salesorder-detail-section">
               <h3>Internal Notes</h3>
               <div className="sales-salesorder-detail-card">
-                {editing ? <textarea value={draft.notes} onChange={e=>updateField('notes', e.target.value)} /> : <p>{draft.notes}</p>}
+                {editing ? <textarea value={draft.notes} onChange={e => updateField('notes', e.target.value)} /> : <p>{draft.notes}</p>}
               </div>
             </div>
           )}
@@ -488,7 +490,7 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
           {editing ? (
             <button className="sales-salesorder-btn sales-salesorder-btn-primary" onClick={saveChanges}>Save Changes</button>
           ) : (
-            <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={()=>setEditing(true)}><FiEdit /> Edit</button>
+            <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={() => setEditing(true)}><FiEdit /> Edit</button>
           )}
         </div>
       </div>
@@ -498,6 +500,8 @@ const OrderDetailDrawer = ({ order, onClose, onSave }) => {
 
 /* ---------- Main Page Component ---------- */
 const SalesOrdersPage = () => {
+    const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+
   const [orders, setOrders] = useState(mockOrders);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState([]);
@@ -581,12 +585,18 @@ const SalesOrdersPage = () => {
     <div className="sales-salesorder-container">
       <div className="sales-salesorder-breadcrumb">Dashboard &gt; Sales &gt; Sales Orders</div>
 
-      <div className="sales-salesorder-header">
-        <div>
+      {/* <div className="sales-salesorder-header"> */}
+
+        <div className="page-header-with-filter">
           <h1 className="sales-salesorder-title">Sales Orders</h1>
-          <p className="sales-salesorder-subtitle">{orders.length} total orders</p>
+
+          <GroupProjectFilter
+            groupValue={groupName}
+            projectValue={projectId}
+            onChange={updateFilters}
+          />
         </div>
-      </div>
+      {/* </div> */}
 
       <div className="sales-salesorder-kpi-grid">
         <div className="sales-salesorder-kpi-card">
@@ -613,7 +623,7 @@ const SalesOrdersPage = () => {
 
       <div className="sales-salesorder-action-bar">
         <div className="sales-salesorder-search-filter">
-          <input className="sales-salesorder-search" placeholder="Search by Order ID, Customer, Proposal..." value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} />
+          <input className="sales-salesorder-search" placeholder="Search by Order ID, Customer, Proposal..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
           <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={() => setShowFilters(!showFilters)}>
             Filters {showFilters ? '▲' : '▼'}
           </button>
@@ -621,7 +631,7 @@ const SalesOrdersPage = () => {
 
         <div className="sales-salesorder-actions">
           <button className="sales-salesorder-btn sales-salesorder-btn-secondary">Export CSV</button>
-          <button className="sales-salesorder-btn sales-salesorder-btn-primary" onClick={()=>setShowAddModal(true)}>
+          <button className="sales-salesorder-btn sales-salesorder-btn-primary" onClick={() => setShowAddModal(true)}>
             <FiPlus /> Create New Order
           </button>
         </div>
@@ -629,7 +639,7 @@ const SalesOrdersPage = () => {
 
       {showFilters && (
         <div className="sales-salesorder-filters-panel">
-          <select className="sales-salesorder-filter-select" value={filters.status} onChange={e=>setFilters(prev=>({...prev, status: e.target.value}))}>
+          <select className="sales-salesorder-filter-select" value={filters.status} onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}>
             <option value="">All Status</option>
             <option value="Draft">Draft</option>
             <option value="Confirmed">Confirmed</option>
@@ -638,19 +648,19 @@ const SalesOrdersPage = () => {
             <option value="Cancelled">Cancelled</option>
           </select>
 
-          <select className="sales-salesorder-filter-select" value={filters.paymentStatus} onChange={e=>setFilters(prev=>({...prev, paymentStatus: e.target.value}))}>
+          <select className="sales-salesorder-filter-select" value={filters.paymentStatus} onChange={e => setFilters(prev => ({ ...prev, paymentStatus: e.target.value }))}>
             <option value="">All Payment Status</option>
             <option value="Pending">Pending</option>
             <option value="Partially Paid">Partially Paid</option>
             <option value="Paid">Paid</option>
           </select>
 
-          <select className="sales-salesorder-filter-select" value={filters.assignedTo} onChange={e=>setFilters(prev=>({...prev, assignedTo: e.target.value}))}>
+          <select className="sales-salesorder-filter-select" value={filters.assignedTo} onChange={e => setFilters(prev => ({ ...prev, assignedTo: e.target.value }))}>
             <option value="">All Salespersons</option>
             {[...new Set(orders.map(o => o.assignedTo))].map(name => <option key={name} value={name}>{name}</option>)}
           </select>
 
-          <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={()=>setFilters({ status: '', paymentStatus: '', assignedTo: '', dateFrom: '', dateTo: '' })}>Clear Filters</button>
+          <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={() => setFilters({ status: '', paymentStatus: '', assignedTo: '', dateFrom: '', dateTo: '' })}>Clear Filters</button>
         </div>
       )}
 
@@ -659,7 +669,7 @@ const SalesOrdersPage = () => {
           <span>{selectedOrders.length} order(s) selected</span>
           <button className="sales-salesorder-btn sales-salesorder-btn-secondary">Change Status</button>
           <button className="sales-salesorder-btn sales-salesorder-btn-secondary">Export Selected</button>
-          <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={()=>setSelectedOrders([])}>Clear Selection</button>
+          <button className="sales-salesorder-btn sales-salesorder-btn-secondary" onClick={() => setSelectedOrders([])}>Clear Selection</button>
         </div>
       )}
 
@@ -670,12 +680,12 @@ const SalesOrdersPage = () => {
               <th className="sales-salesorder-checkbox-col">
                 <input type="checkbox" checked={selectedOrders.length === paginatedOrders.length && paginatedOrders.length > 0} onChange={handleSelectAll} />
               </th>
-              <th onClick={()=>handleSort('id')} className="sales-salesorder-sortable">Order ID {sortConfig.key==='id' && (sortConfig.direction==='asc' ? '↑' : '↓')}</th>
+              <th onClick={() => handleSort('id')} className="sales-salesorder-sortable">Order ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</th>
               <th>Customer</th>
               <th>Proposal ID</th>
-              <th onClick={()=>handleSort('orderDate')} className="sales-salesorder-sortable">Order Date {sortConfig.key==='orderDate' && (sortConfig.direction==='asc' ? '↑' : '↓')}</th>
+              <th onClick={() => handleSort('orderDate')} className="sales-salesorder-sortable">Order Date {sortConfig.key === 'orderDate' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</th>
               <th>Delivery Date</th>
-              <th onClick={()=>handleSort('orderValue')} className="sales-salesorder-sortable">Order Value {sortConfig.key==='orderValue' && (sortConfig.direction==='asc' ? '↑' : '↓')}</th>
+              <th onClick={() => handleSort('orderValue')} className="sales-salesorder-sortable">Order Value {sortConfig.key === 'orderValue' && (sortConfig.direction === 'asc' ? '↑' : '↓')}</th>
               <th>Items</th>
               <th>Status</th>
               <th>Payment</th>
@@ -686,8 +696,8 @@ const SalesOrdersPage = () => {
           <tbody>
             {paginatedOrders.map(order => (
               <tr key={order.id} className="sales-salesorder-table-row">
-                <td><input type="checkbox" checked={selectedOrders.includes(order.id)} onChange={()=>handleSelectOrder(order.id)} /></td>
-                <td><span className="sales-salesorder-link" onClick={()=>setSelectedOrder(order)}>{order.id}</span></td>
+                <td><input type="checkbox" checked={selectedOrders.includes(order.id)} onChange={() => handleSelectOrder(order.id)} /></td>
+                <td><span className="sales-salesorder-link" onClick={() => setSelectedOrder(order)}>{order.id}</span></td>
                 <td><span className="sales-salesorder-link">{order.customerName}</span></td>
                 <td>{order.proposalId ? <span className="sales-salesorder-link">{order.proposalId}</span> : <span className="sales-salesorder-text-muted">—</span>}</td>
                 <td>{order.orderDate}</td>
@@ -699,8 +709,8 @@ const SalesOrdersPage = () => {
                 <td>{order.assignedTo}</td>
                 <td>
                   <div className="sales-salesorder-action-buttons">
-                    <button title="View" className="sales-salesorder-icon-btn" onClick={()=>setSelectedOrder(order)}><FiEye /></button>
-                    <button title="Edit" className="sales-salesorder-icon-btn" onClick={()=>setSelectedOrder(order)}><FiEdit /></button>
+                    <button title="View" className="sales-salesorder-icon-btn" onClick={() => setSelectedOrder(order)}><FiEye /></button>
+                    <button title="Edit" className="sales-salesorder-icon-btn" onClick={() => setSelectedOrder(order)}><FiEdit /></button>
                     <button title="Invoice" className="sales-salesorder-icon-btn"><FiFileText /></button>
                   </div>
                 </td>
@@ -715,20 +725,20 @@ const SalesOrdersPage = () => {
           Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, sortedOrders.length)} of {sortedOrders.length} orders
         </div>
         <div className="sales-salesorder-pagination-controls">
-          <select className="sales-salesorder-pagination-select" value={itemsPerPage} onChange={(e)=>{ setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}>
+          <select className="sales-salesorder-pagination-select" value={itemsPerPage} onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}>
             <option value="10">10 per page</option>
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
           </select>
-          <button className="sales-salesorder-pagination-btn" disabled={currentPage===1} onClick={()=>setCurrentPage(p=>p-1)}>Previous</button>
+          <button className="sales-salesorder-pagination-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</button>
           <span className="sales-salesorder-pagination-current">Page {currentPage} of {totalPages}</span>
-          <button className="sales-salesorder-pagination-btn" disabled={currentPage===totalPages} onClick={()=>setCurrentPage(p=>p+1)}>Next</button>
+          <button className="sales-salesorder-pagination-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</button>
         </div>
       </div>
 
-      {showAddModal && <AddOrderModal onClose={()=>setShowAddModal(false)} onCreate={handleCreateOrder} />}
+      {showAddModal && <AddOrderModal onClose={() => setShowAddModal(false)} onCreate={handleCreateOrder} />}
 
-      {selectedOrder && <OrderDetailDrawer order={selectedOrder} onClose={()=>setSelectedOrder(null)} onSave={handleUpdateOrder} />}
+      {selectedOrder && <OrderDetailDrawer order={selectedOrder} onClose={() => setSelectedOrder(null)} onSave={handleUpdateOrder} />}
     </div>
   );
 };
