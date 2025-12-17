@@ -144,8 +144,8 @@ function Navbar({ onMenuClick }) {
               setShowNotifications(false);
               setShowMessages(false);
             }}>
-              <div className="profile-avatar">JD</div>
-              <span className="profile-name">John Doe</span>
+              <div className="profile-avatar">PHV</div>
+              <span className="profile-name">Harsha</span>
               <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M19 9l-7 7-7-7" />
