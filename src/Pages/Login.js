@@ -1,25 +1,14 @@
 // src/Pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import "../pages-css/Login.css";
 import heroDesktop from "../images/logo.png";
 import heroMobile from "../images/logo.png";
-/*
-  Replace the image imports below with your actual image paths.
-  Examples:
-    import heroDesktop from "../assets/login-desktop.png";
-    import heroMobile from "../assets/login-mobile.png";
-  Or put images in public/ and use: const heroDesktop = "/images/login-desktop.png";
-*/
-// const heroDesktop = "../images/logo.png"; // <- update to your desktop image path
-// const heroMobile = "../images/logo.png";   // <- update to your mobile image path
 
 export default function Login() {
   const navigate = useNavigate();
-
-  // dummy credentials (front-end validation only, per your request)
-  const DUMMY_EMAIL = "admin@sesolaenergy.com";
-  const DUMMY_PASSWORD = "Password123";
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,24 +20,39 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    // small client-side validation
     if (!email || !password) {
       setError("Please enter email and password.");
       return;
     }
 
     setLoading(true);
-    // simulate async (very short)
-    await new Promise((r) => setTimeout(r, 500));
 
-    if (email.trim().toLowerCase() === DUMMY_EMAIL && password === DUMMY_PASSWORD) {
-      // success -> navigate to dashboard
-      // you may want to set auth token / context here
-      navigate("/dashboard", { replace: true });
-    } else {
-      setError("Invalid credentials. Try: admin@axcl.com / Password123");
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store user data in localStorage
+        login(data.data);
+
+        // Navigate to dashboard
+        navigate("/dashboard", { replace: true });
+      } else {
+        setError(data.message || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Unable to connect to server. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -56,8 +60,8 @@ export default function Login() {
       <div className="login-container">
         {/* LEFT: hero for larger screens */}
         <div className="login-hero">
-          <img src={heroDesktop} alt="AXCL logo" className="login-hero-img desktop" />
-          <img src={heroMobile} alt="AXCL logo" className="login-hero-img mobile" />
+          <img src={heroDesktop} alt="BD Portal logo" className="login-hero-img desktop" />
+          <img src={heroMobile} alt="BD Portal logo" className="login-hero-img mobile" />
         </div>
 
         {/* RIGHT: form */}
@@ -67,7 +71,9 @@ export default function Login() {
             <p className="login-sub">Sign in to continue to BD Portal</p>
 
             <form className="login-form" onSubmit={handleSubmit}>
-              <label className="login-label">Email Address <span className="required">*</span></label>
+              <label className="login-label">
+                Email Address <span className="required">*</span>
+              </label>
               <input
                 className="login-input"
                 type="email"
@@ -75,9 +81,12 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="username"
+                disabled={loading}
               />
 
-              <label className="login-label">Password <span className="required">*</span></label>
+              <label className="login-label">
+                Password <span className="required">*</span>
+              </label>
               <div className="login-password-row">
                 <input
                   className="login-input"
@@ -86,21 +95,31 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
+                  disabled={loading}
                 />
                 <button
                   type="button"
                   className="login-showpw"
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label="toggle password"
+                  disabled={loading}
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
 
               <div className="login-extras">
-                <a className="login-forgot" href="#0" onClick={(e) => e.preventDefault()}>
-                  Forget Password? Reset Now.
-                </a>
+                <button
+                  type="button"
+                  className="login-forgot"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Add your forgot password logic here later
+                    console.log("Forgot password clicked");
+                  }}
+                >
+                  Forgot Password? Reset Now.
+                </button>
               </div>
 
               {error && <div className="login-error">{error}</div>}
@@ -114,7 +133,7 @@ export default function Login() {
           </div>
 
           <div className="login-footer-note">
-            For demo: <strong>admin@sesolaenergy.com</strong> / <strong>Password123</strong>
+            For demo: <strong>admin@sesolaenergy.com</strong> / <strong>Admin@123</strong>
           </div>
         </div>
       </div>
