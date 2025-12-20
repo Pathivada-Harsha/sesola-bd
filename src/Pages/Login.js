@@ -1,6 +1,6 @@
 // src/Pages/Login.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import "../pages-css/Login.css";
 import heroDesktop from "../images/logo.png";
@@ -8,13 +8,23 @@ import heroMobile from "../images/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const location = useLocation();
+  const { login, isAuthenticated, loading } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      // Get the page user was trying to access, or default to dashboard
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate, location]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,10 +35,10 @@ export default function Login() {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:8080/login/userLogin", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/login/userLogin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,11 +52,14 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user data
+        // Store user data with context
         login(data);
 
-        // Navigate to dashboard
-        navigate("/dashboard", { replace: true });
+        // Get the page user was trying to access, or default to dashboard
+        const from = location.state?.from?.pathname || '/dashboard';
+        
+        // Navigate to the intended page
+        navigate(from, { replace: true });
       } else {
         setError(data.message || "Login failed. Please try again.");
       }
@@ -54,8 +67,30 @@ export default function Login() {
       console.error("Login error:", err);
       setError("Unable to connect to server. Please try again.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
+  }
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px',
+        color: '#666'
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  // Don't render login form if already authenticated
+  // (the useEffect will handle the redirect)
+  if (isAuthenticated) {
+    return null;
   }
 
   return (
@@ -94,7 +129,7 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
-                disabled={loading}
+                disabled={submitting}
               />
 
               <label className="login-label">
@@ -108,14 +143,14 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
-                  disabled={loading}
+                  disabled={submitting}
                 />
                 <button
                   type="button"
                   className="login-showpw"
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label="toggle password"
-                  disabled={loading}
+                  disabled={submitting}
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -140,9 +175,9 @@ export default function Login() {
                 <button
                   type="submit"
                   className="login-btn"
-                  disabled={loading}
+                  disabled={submitting}
                 >
-                  {loading ? "Signing in..." : "Sign in"}
+                  {submitting ? "Signing in..." : "Sign in"}
                 </button>
               </div>
             </form>

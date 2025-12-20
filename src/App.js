@@ -1,6 +1,8 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import Navbar from './components/Navbar.js';
 import Sidebar from './components/sidebar.js';
 import Dashboard from './Pages/Dashboard.js';
@@ -37,8 +39,8 @@ function AppWrapper() {
 }
 
 function AppShell({ hideShell }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile
-  const [collapsed, setCollapsed] = useState(false); // desktop collapse state
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
+  const [collapsed, setCollapsed] = useState(false); 
 
   // restore collapsed state from localStorage (optional)
   useEffect(() => {
@@ -72,30 +74,124 @@ function AppShell({ hideShell }) {
 
       <main className={`main-content ${hideShell ? "fullpage" : ""}`}>
         <Routes>
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
 
-          <Route path="/dashboard" element={<Dashboardtabs />} />
-          <Route path="/sales/leads" element={<Leads />} />
-          <Route path="/sales/proposals" element={<Proposals />} />
-          <Route path="/procurement/quotations" element={<Quatations />} />
-          <Route path="/procurement/procurementquatations" element={<ProcurementQuatations />} />
+          {/* Protected routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboardtabs />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/sales/leads" element={
+            <ProtectedRoute>
+              <Leads />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/sales/proposals" element={
+            <ProtectedRoute>
+              <Proposals />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/procurement/quotations" element={
+            <ProtectedRoute>
+              <Quatations />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/procurement/procurementquatations" element={
+            <ProtectedRoute>
+              <ProcurementQuatations />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/sales/invoices" element={<Invoices />} />
-          <Route path="/sales/clients" element={<Customer_dashboard />} />
-          <Route path="/sales/SalesOrder" element={<SalesOrder />} />
-          <Route path="/sales/followups" element={<Follow_up />} />
-          <Route path="/procurement/vendors" element={<Procurement />} />
-          <Route path="/procurement/purchaseorders" element={<PurchaseOrders />} />
-          <Route path="/procurement/billsrecieved" element={<BillsRecieved />} />
+          <Route path="/sales/invoices" element={
+            <ProtectedRoute>
+              <Invoices />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/sales/clients" element={
+            <ProtectedRoute>
+              <Customer_dashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/sales/SalesOrder" element={
+            <ProtectedRoute>
+              <SalesOrder />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/sales/followups" element={
+            <ProtectedRoute>
+              <Follow_up />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/procurement/vendors" element={
+            <ProtectedRoute>
+              <Procurement />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/procurement/purchaseorders" element={
+            <ProtectedRoute>
+              <PurchaseOrders />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/procurement/billsrecieved" element={
+            <ProtectedRoute>
+              <BillsRecieved />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<div className="page-container"><h2>Admin Settings Page</h2></div>} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/solarprofile" element={<SolarProfile />} />
-          <Route path="/users" element={<Users />} />
+          <Route path="/documents" element={
+            <ProtectedRoute>
+              <Documents />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/analytics" element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <div className="page-container"><h2>Admin Settings Page</h2></div>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/reports" element={
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/solarprofile" element={
+            <ProtectedRoute>
+              <SolarProfile />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/users" element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          } />
         </Routes>
       </main>
     </div>
@@ -104,8 +200,10 @@ function AppShell({ hideShell }) {
 
 export default function App() {
   return (
-    <Router>
-      <AppWrapper />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppWrapper />
+      </Router>
+    </AuthProvider>
   );
 }

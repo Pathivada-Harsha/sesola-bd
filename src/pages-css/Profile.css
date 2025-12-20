@@ -40,15 +40,23 @@
 .profile-user-page-stat { display:flex; justify-content:space-between; padding:8px 10px; border-radius:8px; background:#fafbfd; font-size:13px; color:#334155; }
 .profile-user-page-stat-title { color:#6b7280; font-size:12px; }
 
-/* actions */
-.profile-user-page-actions { display:flex; gap:8px; }
-
 /* RIGHT SIDE */
 .profile-user-page-main { display:flex; flex-direction:column; gap:12px; }
 
+/* header with title and button in same row */
+.profile-user-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 /* form */
 .profile-user-page-form h3,
-.profile-user-page-password h3 { margin:0 0 12px 0; color:#0b4c9d; }
+.profile-user-page-password h3 { 
+  margin: 0; 
+  color: #0b4c9d; 
+}
 
 /* rows */
 .profile-user-page-row { display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
@@ -100,6 +108,7 @@
   border:1px solid #e6edf3;
   background:transparent;
   cursor:pointer;
+  font-size: 14px;
 }
 
 .btn.primary {
