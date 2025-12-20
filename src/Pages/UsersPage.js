@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../pages-css/UsersPage.css';
 
-
 const UsersPage = () => {
   // State management
   const [users, setUsers] = useState([]);
@@ -11,13 +10,36 @@ const UsersPage = () => {
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [showEditPermissionsModal, setShowEditPermissionsModal] = useState(false);
+  const [showMenuPermissionsModal, setShowMenuPermissionsModal] = useState(false);
+  const [showEditMenuPermissionsModal, setShowEditMenuPermissionsModal] = useState(false);
+  const [showUserPermissionsModal, setShowUserPermissionsModal] = useState(false);
+  const [showEditUserPermissionsModal, setShowEditUserPermissionsModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedRolePermissions, setSelectedRolePermissions] = useState([]);
+  const [selectedUserMenuPermissions, setSelectedUserMenuPermissions] = useState([]);
+  const [selectedUserPermissions, setSelectedUserPermissions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [activeTab, setActiveTab] = useState('users'); // 'users' or 'roles'
+
+  // Menu permissions list
+  const menuPermissionsList = [
+    { id: 'dashboard', name: 'Dashboard', description: 'Access to dashboard page' },
+    { id: 'analytics', name: 'Analytics', description: 'Access to analytics page' },
+    { id: 'documents', name: 'Documents', description: 'Access to documents page' },
+    { id: 'settings', name: 'Settings', description: 'Access to settings page' },
+    { id: 'followups', name: 'Followups', description: 'Access to followups page' },
+    { id: 'reports', name: 'Reports', description: 'Access to reports page' },
+    { id: 'invoices', name: 'Invoices', description: 'Access to invoices page' },
+    { id: 'sales.clients-data', name: 'Sales - Clients Data', description: 'Access to clients data page' },
+    { id: 'sales.leads', name: 'Sales - Leads', description: 'Access to leads page' },
+    { id: 'sales.estimation', name: 'Sales - Estimation', description: 'Access to estimation page' },
+    { id: 'procurement.vendors', name: 'Procurement - Vendors', description: 'Access to vendors page' },
+    { id: 'procurement.quatations_recieved', name: 'Procurement - Quotations Received', description: 'Access to quotations received page' },
+    { id: 'procurement.bills_recived', name: 'Procurement - Bills Received', description: 'Access to bills received page' }
+  ];
 
   // Form state for new user
   const [newUser, setNewUser] = useState({
@@ -27,7 +49,9 @@ const UsersPage = () => {
     phone: '',
     password: '',
     role_id: '',
-    is_active: true
+    is_active: true,
+    menu_permissions: [],
+    user_permissions: []
   });
 
   // Mock data - Replace with actual API calls
@@ -52,6 +76,8 @@ const UsersPage = () => {
           role_id: 1,
           role_name: 'SuperAdmin',
           permission_count: 69,
+          user_permissions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
+          menu_permissions: ['dashboard', 'analytics', 'documents', 'settings', 'followups', 'reports', 'invoices', 'sales.clients-data', 'sales.leads', 'sales.estimation', 'procurement.vendors', 'procurement.quatations_recieved', 'procurement.bills_recived'],
           created_at: '2024-01-15'
         },
         {
@@ -64,6 +90,8 @@ const UsersPage = () => {
           role_id: 2,
           role_name: 'Admin',
           permission_count: 68,
+          user_permissions: [1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 68, 69],
+          menu_permissions: ['dashboard', 'analytics', 'documents', 'followups', 'reports', 'invoices', 'sales.clients-data', 'sales.leads', 'sales.estimation', 'procurement.vendors', 'procurement.quatations_recieved', 'procurement.bills_recived'],
           created_at: '2024-01-16'
         },
         {
@@ -76,6 +104,8 @@ const UsersPage = () => {
           role_id: 3,
           role_name: 'Sales Manager',
           permission_count: 40,
+          user_permissions: [1, 6, 7, 8, 9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 54, 57, 59, 60, 61, 62, 63, 64, 67, 68, 69],
+          menu_permissions: ['dashboard', 'reports', 'sales.clients-data', 'sales.leads', 'sales.estimation', 'followups'],
           created_at: '2024-02-01'
         },
         {
@@ -88,6 +118,8 @@ const UsersPage = () => {
           role_id: 4,
           role_name: 'BD Executive',
           permission_count: 24,
+          user_permissions: [6, 7, 8, 14, 15, 16, 19, 20, 21, 24, 25, 26, 29, 30, 34, 57, 60, 61, 62, 63, 68],
+          menu_permissions: ['dashboard', 'sales.clients-data', 'sales.leads', 'sales.estimation', 'followups'],
           created_at: '2024-02-05'
         },
         {
@@ -100,6 +132,8 @@ const UsersPage = () => {
           role_id: 5,
           role_name: 'Procurement Manager',
           permission_count: 36,
+          user_permissions: [1, 10, 11, 12, 13, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 62, 63, 64, 67, 68, 69],
+          menu_permissions: ['dashboard', 'reports', 'procurement.vendors', 'procurement.quatations_recieved', 'procurement.bills_recived', 'followups'],
           created_at: '2024-02-10'
         },
         {
@@ -108,10 +142,12 @@ const UsersPage = () => {
           email: 'neha.gupta@istlabs.in',
           full_name: 'Neha Gupta',
           phone: '+91-9876543215',
-          is_active: true,
+          is_active: false,
           role_id: 6,
           role_name: 'Procurement Executive',
           permission_count: 21,
+          user_permissions: [10, 11, 12, 39, 40, 41, 44, 45, 46, 49, 50, 51, 54, 58, 60, 61, 62, 63, 68],
+          menu_permissions: ['dashboard', 'procurement.vendors', 'procurement.quatations_recieved', 'procurement.bills_recived'],
           created_at: '2024-02-15'
         }
       ];
@@ -265,7 +301,7 @@ const UsersPage = () => {
         id: newUserId,
         ...newUser,
         role_name: role?.name || '',
-        permission_count: role?.permission_count || 0,
+        permission_count: newUser.user_permissions?.length || 0,
         created_at: new Date().toISOString().split('T')[0]
       };
       
@@ -278,7 +314,9 @@ const UsersPage = () => {
         phone: '',
         password: '',
         role_id: '',
-        is_active: true
+        is_active: true,
+        menu_permissions: [],
+        user_permissions: []
       });
       setLoading(false);
       alert('User created successfully!');
@@ -300,7 +338,7 @@ const UsersPage = () => {
       const updatedUser = {
         ...selectedUser,
         role_name: role?.name || '',
-        permission_count: role?.permission_count || 0
+        permission_count: selectedUser.user_permissions?.length || 0
       };
       
       setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
@@ -400,6 +438,127 @@ const UsersPage = () => {
     }
   };
 
+  // Menu Permissions Handlers
+  const handleToggleMenuPermission = (menuId) => {
+    if (newUser.menu_permissions.includes(menuId)) {
+      setNewUser({
+        ...newUser,
+        menu_permissions: newUser.menu_permissions.filter(id => id !== menuId)
+      });
+    } else {
+      setNewUser({
+        ...newUser,
+        menu_permissions: [...newUser.menu_permissions, menuId]
+      });
+    }
+  };
+
+  const handleToggleEditMenuPermission = (menuId) => {
+    if (selectedUser.menu_permissions.includes(menuId)) {
+      setSelectedUser({
+        ...selectedUser,
+        menu_permissions: selectedUser.menu_permissions.filter(id => id !== menuId)
+      });
+    } else {
+      setSelectedUser({
+        ...selectedUser,
+        menu_permissions: [...selectedUser.menu_permissions, menuId]
+      });
+    }
+  };
+
+  const handleViewMenuPermissions = (user) => {
+    setSelectedUser(user);
+    setShowMenuPermissionsModal(true);
+  };
+
+  const handleEditMenuPermissions = (user) => {
+    setSelectedUser({...user});
+    setSelectedUserMenuPermissions([...user.menu_permissions]);
+    setShowEditMenuPermissionsModal(true);
+  };
+
+  const handleToggleUserMenuPermission = (menuId) => {
+    if (selectedUserMenuPermissions.includes(menuId)) {
+      setSelectedUserMenuPermissions(selectedUserMenuPermissions.filter(id => id !== menuId));
+    } else {
+      setSelectedUserMenuPermissions([...selectedUserMenuPermissions, menuId]);
+    }
+  };
+
+  const handleSaveMenuPermissions = async () => {
+    setLoading(true);
+    // Simulate API call to save user menu permissions
+    setTimeout(() => {
+      const updatedUsers = users.map(u => 
+        u.id === selectedUser.id
+          ? {...u, menu_permissions: selectedUserMenuPermissions}
+          : u
+      );
+      setUsers(updatedUsers);
+      
+      setShowEditMenuPermissionsModal(false);
+      setSelectedUser(null);
+      setSelectedUserMenuPermissions([]);
+      setLoading(false);
+      alert('Menu permissions updated successfully!');
+    }, 500);
+  };
+
+  // User Permissions Handlers
+  const handleViewUserPermissions = (user) => {
+    setSelectedUser(user);
+    setShowUserPermissionsModal(true);
+  };
+
+  const handleEditUserPermissions = (user) => {
+    setSelectedUser({...user});
+    setSelectedUserPermissions([...user.user_permissions]);
+    setShowEditUserPermissionsModal(true);
+  };
+
+  const handleToggleUserPermission = (permissionId) => {
+    if (selectedUserPermissions.includes(permissionId)) {
+      setSelectedUserPermissions(selectedUserPermissions.filter(id => id !== permissionId));
+    } else {
+      setSelectedUserPermissions([...selectedUserPermissions, permissionId]);
+    }
+  };
+
+  const handleSelectAllUserPermissionsInModule = (module) => {
+    const modulePermissions = permissions.filter(p => p.module === module);
+    const modulePermissionIds = modulePermissions.map(p => p.id);
+    const allSelected = modulePermissionIds.every(id => selectedUserPermissions.includes(id));
+    
+    if (allSelected) {
+      // Deselect all in module
+      setSelectedUserPermissions(selectedUserPermissions.filter(id => !modulePermissionIds.includes(id)));
+    } else {
+      // Select all in module
+      const newPermissions = [...new Set([...selectedUserPermissions, ...modulePermissionIds])];
+      setSelectedUserPermissions(newPermissions);
+    }
+  };
+
+  const handleSaveUserPermissions = async () => {
+    setLoading(true);
+    // Simulate API call to save user permissions
+    setTimeout(() => {
+      const updatedUsers = users.map(u => 
+        u.id === selectedUser.id
+          ? {...u, user_permissions: selectedUserPermissions, permission_count: selectedUserPermissions.length}
+          : u
+      );
+      setUsers(updatedUsers);
+      
+      setShowEditUserPermissionsModal(false);
+      setSelectedUser(null);
+      setSelectedUserPermissions([]);
+      setLoading(false);
+      alert('User permissions updated successfully!');
+    }, 500);
+  };
+
   // Filter users
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
@@ -497,12 +656,8 @@ const UsersPage = () => {
               <div className="users-page-stat-label">Active Users</div>
             </div>
             <div className="users-page-stat-card">
-              <div className="users-page-stat-number">{roles.length}</div>
-              <div className="users-page-stat-label">Roles</div>
-            </div>
-            <div className="users-page-stat-card">
-              <div className="users-page-stat-number">{permissions.length}</div>
-              <div className="users-page-stat-label">Permissions</div>
+              <div className="users-page-stat-number">{users.filter(u => !u.is_active).length}</div>
+              <div className="users-page-stat-label">Inactive Users</div>
             </div>
           </div>
 
@@ -514,11 +669,13 @@ const UsersPage = () => {
               <table className="users-page-table">
                 <thead>
                   <tr>
-                    <th>User</th>
+                    <th>User ID</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Role</th>
                     <th>Permissions</th>
+                    <th>Menu Permissions</th>
                     <th>Status</th>
                     <th>Created</th>
                     <th>Actions</th>
@@ -533,10 +690,12 @@ const UsersPage = () => {
                             {user.full_name.charAt(0)}
                           </div>
                           <div>
-                            <div className="users-page-user-name">{user.full_name}</div>
                             <div className="users-page-user-username">@{user.username}</div>
                           </div>
                         </div>
+                      </td>
+                      <td>
+                        <div className="users-page-user-name">{user.full_name}</div>
                       </td>
                       <td>{user.email}</td>
                       <td>{user.phone}</td>
@@ -548,9 +707,17 @@ const UsersPage = () => {
                       <td>
                         <button 
                           className="users-page-btn-link"
-                          onClick={() => handleViewPermissions(roles.find(r => r.id === user.role_id))}
+                          onClick={() => handleViewUserPermissions(user)}
                         >
                           {user.permission_count} permissions
+                        </button>
+                      </td>
+                      <td>
+                        <button 
+                          className="users-page-btn-link"
+                          onClick={() => handleViewMenuPermissions(user)}
+                        >
+                          {user.menu_permissions.length} menus
                         </button>
                       </td>
                       <td>
@@ -572,6 +739,20 @@ const UsersPage = () => {
                             title="Edit User"
                           >
                             ✏️
+                          </button>
+                          <button 
+                            className="users-page-btn-icon"
+                            onClick={() => handleEditUserPermissions(user)}
+                            title="Edit Permissions"
+                          >
+                            🔑
+                          </button>
+                          <button 
+                            className="users-page-btn-icon"
+                            onClick={() => handleEditMenuPermissions(user)}
+                            title="Edit Menu Permissions"
+                          >
+                            🔐
                           </button>
                           <button 
                             className="users-page-btn-icon users-page-btn-danger"
@@ -647,7 +828,7 @@ const UsersPage = () => {
       {/* Add User Modal */}
       {showAddUserModal && (
         <div className="users-page-modal-overlay" onClick={() => setShowAddUserModal(false)}>
-          <div className="users-page-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
             <div className="users-page-modal-header">
               <h2>Add New User</h2>
               <button 
@@ -735,6 +916,115 @@ const UsersPage = () => {
                     </select>
                   </div>
                 </div>
+
+                {/* Menu Permissions Section */}
+                <div className="users-page-form-group">
+                  <div className="users-page-permission-module-header">
+                    <label className="users-page-section-label" style={{marginBottom: 0}}>Menu Permissions</label>
+                    <button
+                      type="button"
+                      className="users-page-btn-select-all"
+                      onClick={() => {
+                        if (newUser.menu_permissions.length === menuPermissionsList.length) {
+                          setNewUser({...newUser, menu_permissions: []});
+                        } else {
+                          setNewUser({...newUser, menu_permissions: menuPermissionsList.map(m => m.id)});
+                        }
+                      }}
+                    >
+                      {newUser.menu_permissions.length === menuPermissionsList.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  </div>
+                  <div className="users-page-menu-permissions-grid">
+                    {menuPermissionsList.map(menu => (
+                      <div key={menu.id} className="users-page-menu-permission-item">
+                        <label className="users-page-toggle-label">
+                          <span className="users-page-menu-permission-name">{menu.name}</span>
+                          <label className="users-page-toggle users-page-toggle-small">
+                            <input
+                              type="checkbox"
+                              checked={newUser.menu_permissions.includes(menu.id)}
+                              onChange={() => handleToggleMenuPermission(menu.id)}
+                            />
+                            <span className="users-page-toggle-slider"></span>
+                          </label>
+                        </label>
+                        <p className="users-page-menu-permission-desc">{menu.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Feature Permissions Section */}
+                {/* <div className="users-page-form-group">
+                  <label className="users-page-section-label">Feature Permissions</label>
+                  <div className="users-page-permissions-summary" style={{marginBottom: '16px'}}>
+                    <strong>Selected:</strong> {newUser.user_permissions.length} of {permissions.length} permissions
+                  </div>
+                  {Object.entries(groupedPermissions).map(([module, perms]) => {
+                    const modulePermissionIds = perms.map(p => p.id);
+                    const allSelected = modulePermissionIds.every(id => newUser.user_permissions.includes(id));
+                    
+                    return (
+                      <div key={module} className="users-page-permission-group" style={{marginBottom: '16px'}}>
+                        <div className="users-page-permission-module-header">
+                          <h3 className="users-page-permission-module">{module}</h3>
+                          <button
+                            type="button"
+                            className="users-page-btn-select-all"
+                            onClick={() => {
+                              if (allSelected) {
+                                setNewUser({
+                                  ...newUser,
+                                  user_permissions: newUser.user_permissions.filter(id => !modulePermissionIds.includes(id))
+                                });
+                              } else {
+                                setNewUser({
+                                  ...newUser,
+                                  user_permissions: [...new Set([...newUser.user_permissions, ...modulePermissionIds])]
+                                });
+                              }
+                            }}
+                          >
+                            {allSelected ? 'Deselect All' : 'Select All'}
+                          </button>
+                        </div>
+                        <div className="users-page-permission-toggles">
+                          {perms.map(perm => (
+                            <div key={perm.id} className="users-page-permission-toggle-item">
+                              <label className="users-page-toggle-label">
+                                <div className="users-page-permission-toggle-details">
+                                  <div className="users-page-permission-name">{perm.name}</div>
+                                  <div className="users-page-permission-desc">{perm.description}</div>
+                                </div>
+                                <label className="users-page-toggle users-page-toggle-small">
+                                  <input
+                                    type="checkbox"
+                                    checked={newUser.user_permissions.includes(perm.id)}
+                                    onChange={() => {
+                                      if (newUser.user_permissions.includes(perm.id)) {
+                                        setNewUser({
+                                          ...newUser,
+                                          user_permissions: newUser.user_permissions.filter(id => id !== perm.id)
+                                        });
+                                      } else {
+                                        setNewUser({
+                                          ...newUser,
+                                          user_permissions: [...newUser.user_permissions, perm.id]
+                                        });
+                                      }
+                                    }}
+                                  />
+                                  <span className="users-page-toggle-slider"></span>
+                                </label>
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div> */}
                 
                 <div className="users-page-form-group">
                   <label className="users-page-checkbox-label">
@@ -772,7 +1062,7 @@ const UsersPage = () => {
       {/* Edit User Modal */}
       {showEditUserModal && selectedUser && (
         <div className="users-page-modal-overlay" onClick={() => setShowEditUserModal(false)}>
-          <div className="users-page-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
             <div className="users-page-modal-header">
               <h2>Edit User</h2>
               <button 
@@ -843,6 +1133,115 @@ const UsersPage = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* Menu Permissions Section */}
+                <div className="users-page-form-group">
+                  <div className="users-page-permission-module-header">
+                    <label className="users-page-section-label" style={{marginBottom: 0}}>Menu Permissions</label>
+                    <button
+                      type="button"
+                      className="users-page-btn-select-all"
+                      onClick={() => {
+                        if (selectedUser.menu_permissions?.length === menuPermissionsList.length) {
+                          setSelectedUser({...selectedUser, menu_permissions: []});
+                        } else {
+                          setSelectedUser({...selectedUser, menu_permissions: menuPermissionsList.map(m => m.id)});
+                        }
+                      }}
+                    >
+                      {selectedUser.menu_permissions?.length === menuPermissionsList.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  </div>
+                  <div className="users-page-menu-permissions-grid">
+                    {menuPermissionsList.map(menu => (
+                      <div key={menu.id} className="users-page-menu-permission-item">
+                        <label className="users-page-toggle-label">
+                          <span className="users-page-menu-permission-name">{menu.name}</span>
+                          <label className="users-page-toggle users-page-toggle-small">
+                            <input
+                              type="checkbox"
+                              checked={selectedUser.menu_permissions?.includes(menu.id) || false}
+                              onChange={() => handleToggleEditMenuPermission(menu.id)}
+                            />
+                            <span className="users-page-toggle-slider"></span>
+                          </label>
+                        </label>
+                        <p className="users-page-menu-permission-desc">{menu.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Feature Permissions Section */}
+                <div className="users-page-form-group">
+                  <label className="users-page-section-label">Feature Permissions</label>
+                  <div className="users-page-permissions-summary" style={{marginBottom: '16px'}}>
+                    <strong>Selected:</strong> {selectedUser.user_permissions?.length || 0} of {permissions.length} permissions
+                  </div>
+                  {Object.entries(groupedPermissions).map(([module, perms]) => {
+                    const modulePermissionIds = perms.map(p => p.id);
+                    const allSelected = modulePermissionIds.every(id => selectedUser.user_permissions?.includes(id));
+                    
+                    return (
+                      <div key={module} className="users-page-permission-group" style={{marginBottom: '16px'}}>
+                        <div className="users-page-permission-module-header">
+                          <h3 className="users-page-permission-module">{module}</h3>
+                          <button
+                            type="button"
+                            className="users-page-btn-select-all"
+                            onClick={() => {
+                              if (allSelected) {
+                                setSelectedUser({
+                                  ...selectedUser,
+                                  user_permissions: (selectedUser.user_permissions || []).filter(id => !modulePermissionIds.includes(id))
+                                });
+                              } else {
+                                setSelectedUser({
+                                  ...selectedUser,
+                                  user_permissions: [...new Set([...(selectedUser.user_permissions || []), ...modulePermissionIds])]
+                                });
+                              }
+                            }}
+                          >
+                            {allSelected ? 'Deselect All' : 'Select All'}
+                          </button>
+                        </div>
+                        <div className="users-page-permission-toggles">
+                          {perms.map(perm => (
+                            <div key={perm.id} className="users-page-permission-toggle-item">
+                              <label className="users-page-toggle-label">
+                                <div className="users-page-permission-toggle-details">
+                                  <div className="users-page-permission-name">{perm.name}</div>
+                                  <div className="users-page-permission-desc">{perm.description}</div>
+                                </div>
+                                <label className="users-page-toggle users-page-toggle-small">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedUser.user_permissions?.includes(perm.id) || false}
+                                    onChange={() => {
+                                      if (selectedUser.user_permissions?.includes(perm.id)) {
+                                        setSelectedUser({
+                                          ...selectedUser,
+                                          user_permissions: selectedUser.user_permissions.filter(id => id !== perm.id)
+                                        });
+                                      } else {
+                                        setSelectedUser({
+                                          ...selectedUser,
+                                          user_permissions: [...(selectedUser.user_permissions || []), perm.id]
+                                        });
+                                      }
+                                    }}
+                                  />
+                                  <span className="users-page-toggle-slider"></span>
+                                </label>
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
                 
                 <div className="users-page-form-group">
                   <label className="users-page-checkbox-label">
@@ -873,6 +1272,301 @@ const UsersPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Menu Permissions Modal */}
+      {showMenuPermissionsModal && selectedUser && (
+        <div className="users-page-modal-overlay" onClick={() => setShowMenuPermissionsModal(false)}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="users-page-modal-header">
+              <div>
+                <h2>Menu Permissions - {selectedUser.full_name}</h2>
+                <p className="users-page-modal-subtitle">@{selectedUser.username}</p>
+              </div>
+              <button 
+                className="users-page-modal-close"
+                onClick={() => setShowMenuPermissionsModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="users-page-modal-body">
+              <div className="users-page-permissions-summary">
+                <strong>Total Menu Permissions:</strong> {selectedUser.menu_permissions?.length || 0}
+              </div>
+              
+              <div className="users-page-permission-list">
+                {selectedUser.menu_permissions?.map(menuId => {
+                  const menu = menuPermissionsList.find(m => m.id === menuId);
+                  return menu ? (
+                    <div key={menu.id} className="users-page-permission-item">
+                      <span className="users-page-permission-check">✓</span>
+                      <div className="users-page-permission-details">
+                        <div className="users-page-permission-name">{menu.name}</div>
+                        <div className="users-page-permission-desc">{menu.description}</div>
+                      </div>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+
+              {(!selectedUser.menu_permissions || selectedUser.menu_permissions.length === 0) && (
+                <div className="users-page-empty-state">
+                  <p>No menu permissions assigned</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="users-page-modal-footer">
+              <button 
+                className="users-page-btn users-page-btn-secondary"
+                onClick={() => setShowMenuPermissionsModal(false)}
+              >
+                Close
+              </button>
+              <button 
+                className="users-page-btn users-page-btn-primary"
+                onClick={() => {
+                  setShowMenuPermissionsModal(false);
+                  handleEditMenuPermissions(selectedUser);
+                }}
+              >
+                Edit Permissions
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Menu Permissions Modal */}
+      {showEditMenuPermissionsModal && selectedUser && (
+        <div className="users-page-modal-overlay" onClick={() => setShowEditMenuPermissionsModal(false)}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="users-page-modal-header">
+              <div>
+                <h2>Edit Menu Permissions - {selectedUser.full_name}</h2>
+                <p className="users-page-modal-subtitle">Select menu access permissions</p>
+              </div>
+              <button 
+                className="users-page-modal-close"
+                onClick={() => setShowEditMenuPermissionsModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="users-page-modal-body">
+              <div className="users-page-permissions-summary">
+                <strong>Selected:</strong> {selectedUserMenuPermissions.length} of {menuPermissionsList.length} menus
+                <button
+                  type="button"
+                  className="users-page-btn-select-all"
+                  style={{marginLeft: '16px'}}
+                  onClick={() => {
+                    if (selectedUserMenuPermissions.length === menuPermissionsList.length) {
+                      setSelectedUserMenuPermissions([]);
+                    } else {
+                      setSelectedUserMenuPermissions(menuPermissionsList.map(m => m.id));
+                    }
+                  }}
+                >
+                  {selectedUserMenuPermissions.length === menuPermissionsList.length ? 'Deselect All' : 'Select All'}
+                </button>
+              </div>
+              
+              <div className="users-page-menu-permissions-grid">
+                {menuPermissionsList.map(menu => (
+                  <div key={menu.id} className="users-page-menu-permission-item">
+                    <label className="users-page-toggle-label">
+                      <span className="users-page-menu-permission-name">{menu.name}</span>
+                      <label className="users-page-toggle users-page-toggle-small">
+                        <input
+                          type="checkbox"
+                          checked={selectedUserMenuPermissions.includes(menu.id)}
+                          onChange={() => handleToggleUserMenuPermission(menu.id)}
+                        />
+                        <span className="users-page-toggle-slider"></span>
+                      </label>
+                    </label>
+                    <p className="users-page-menu-permission-desc">{menu.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="users-page-modal-footer">
+              <button 
+                type="button"
+                className="users-page-btn users-page-btn-secondary"
+                onClick={() => setShowEditMenuPermissionsModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button"
+                className="users-page-btn users-page-btn-primary"
+                onClick={handleSaveMenuPermissions}
+                disabled={loading}
+              >
+                {loading ? 'Saving...' : 'Save Permissions'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View User Permissions Modal */}
+      {showUserPermissionsModal && selectedUser && (
+        <div className="users-page-modal-overlay" onClick={() => setShowUserPermissionsModal(false)}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="users-page-modal-header">
+              <div>
+                <h2>Permissions - {selectedUser.full_name}</h2>
+                <p className="users-page-modal-subtitle">@{selectedUser.username} • {selectedUser.role_name}</p>
+              </div>
+              <button 
+                className="users-page-modal-close"
+                onClick={() => setShowUserPermissionsModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="users-page-modal-body">
+              <div className="users-page-permissions-summary">
+                <strong>Total Permissions:</strong> {selectedUser.user_permissions?.length || 0}
+              </div>
+              
+              {selectedUser.user_permissions && Object.entries(groupPermissionsByModule(
+                permissions.filter(p => selectedUser.user_permissions.includes(p.id))
+              )).map(([module, perms]) => (
+                <div key={module} className="users-page-permission-group">
+                  <h3 className="users-page-permission-module">{module}</h3>
+                  <div className="users-page-permission-list">
+                    {perms.map(perm => (
+                      <div key={perm.id} className="users-page-permission-item">
+                        <span className="users-page-permission-check">✓</span>
+                        <div className="users-page-permission-details">
+                          <div className="users-page-permission-name">{perm.name}</div>
+                          <div className="users-page-permission-desc">{perm.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {(!selectedUser.user_permissions || selectedUser.user_permissions.length === 0) && (
+                <div className="users-page-empty-state">
+                  <p>No permissions assigned</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="users-page-modal-footer">
+              <button 
+                className="users-page-btn users-page-btn-secondary"
+                onClick={() => setShowUserPermissionsModal(false)}
+              >
+                Close
+              </button>
+              <button 
+                className="users-page-btn users-page-btn-primary"
+                onClick={() => {
+                  setShowUserPermissionsModal(false);
+                  handleEditUserPermissions(selectedUser);
+                }}
+              >
+                Edit Permissions
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Permissions Modal */}
+      {showEditUserPermissionsModal && selectedUser && (
+        <div className="users-page-modal-overlay" onClick={() => setShowEditUserPermissionsModal(false)}>
+          <div className="users-page-modal users-page-modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="users-page-modal-header">
+              <div>
+                <h2>Edit Permissions - {selectedUser.full_name}</h2>
+                <p className="users-page-modal-subtitle">Select feature permissions for this user</p>
+              </div>
+              <button 
+                className="users-page-modal-close"
+                onClick={() => setShowEditUserPermissionsModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="users-page-modal-body">
+              <div className="users-page-permissions-summary">
+                <strong>Selected:</strong> {selectedUserPermissions.length} of {permissions.length} permissions
+              </div>
+              
+              {Object.entries(groupedPermissions).map(([module, perms]) => {
+                const modulePermissionIds = perms.map(p => p.id);
+                const allSelected = modulePermissionIds.every(id => selectedUserPermissions.includes(id));
+                
+                return (
+                  <div key={module} className="users-page-permission-group">
+                    <div className="users-page-permission-module-header">
+                      <h3 className="users-page-permission-module">{module}</h3>
+                      <button
+                        type="button"
+                        className="users-page-btn-select-all"
+                        onClick={() => handleSelectAllUserPermissionsInModule(module)}
+                      >
+                        {allSelected ? 'Deselect All' : 'Select All'}
+                      </button>
+                    </div>
+                    <div className="users-page-permission-toggles">
+                      {perms.map(perm => (
+                        <div key={perm.id} className="users-page-permission-toggle-item">
+                          <label className="users-page-toggle-label">
+                            <div className="users-page-permission-toggle-details">
+                              <div className="users-page-permission-name">{perm.name}</div>
+                              <div className="users-page-permission-desc">{perm.description}</div>
+                            </div>
+                            <label className="users-page-toggle users-page-toggle-small">
+                              <input
+                                type="checkbox"
+                                checked={selectedUserPermissions.includes(perm.id)}
+                                onChange={() => handleToggleUserPermission(perm.id)}
+                              />
+                              <span className="users-page-toggle-slider"></span>
+                            </label>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="users-page-modal-footer">
+              <button 
+                type="button"
+                className="users-page-btn users-page-btn-secondary"
+                onClick={() => setShowEditUserPermissionsModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button"
+                className="users-page-btn users-page-btn-primary"
+                onClick={handleSaveUserPermissions}
+                disabled={loading}
+              >
+                {loading ? 'Saving...' : 'Save Permissions'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -954,7 +1648,6 @@ const UsersPage = () => {
               {Object.entries(groupedPermissions).map(([module, perms]) => {
                 const modulePermissionIds = perms.map(p => p.id);
                 const allSelected = modulePermissionIds.every(id => selectedRolePermissions.includes(id));
-                const someSelected = modulePermissionIds.some(id => selectedRolePermissions.includes(id));
                 
                 return (
                   <div key={module} className="users-page-permission-group">
@@ -968,19 +1661,24 @@ const UsersPage = () => {
                         {allSelected ? 'Deselect All' : 'Select All'}
                       </button>
                     </div>
-                    <div className="users-page-permission-checkboxes">
+                    <div className="users-page-permission-toggles">
                       {perms.map(perm => (
-                        <label key={perm.id} className="users-page-permission-checkbox-item">
-                          <input
-                            type="checkbox"
-                            checked={selectedRolePermissions.includes(perm.id)}
-                            onChange={() => handleTogglePermission(perm.id)}
-                          />
-                          <div className="users-page-permission-checkbox-details">
-                            <div className="users-page-permission-name">{perm.name}</div>
-                            <div className="users-page-permission-desc">{perm.description}</div>
-                          </div>
-                        </label>
+                        <div key={perm.id} className="users-page-permission-toggle-item">
+                          <label className="users-page-toggle-label">
+                            <div className="users-page-permission-toggle-details">
+                              <div className="users-page-permission-name">{perm.name}</div>
+                              <div className="users-page-permission-desc">{perm.description}</div>
+                            </div>
+                            <label className="users-page-toggle users-page-toggle-small">
+                              <input
+                                type="checkbox"
+                                checked={selectedRolePermissions.includes(perm.id)}
+                                onChange={() => handleTogglePermission(perm.id)}
+                              />
+                              <span className="users-page-toggle-slider"></span>
+                            </label>
+                          </label>
+                        </div>
                       ))}
                     </div>
                   </div>
