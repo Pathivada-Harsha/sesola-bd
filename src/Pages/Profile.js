@@ -17,6 +17,7 @@ export default function Profile() {
 
   const [user, setUser] = useState(initialUser);
   const [editing, setEditing] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [profileForm, setProfileForm] = useState({
     name: user.name,
     email: user.email,
@@ -95,6 +96,7 @@ export default function Profile() {
     }
 
     setPwdForm({ current: "", newPwd: "", confirm: "" });
+    setShowPasswordForm(false);
     alert("Password changed (stub). Replace with real API.");
   }
 
@@ -169,19 +171,6 @@ export default function Profile() {
               </div>
             </div>
           </div>
-
-          <div className="profile-user-page-actions">
-            {!editing ? (
-              <button className="btn primary" onClick={() => setEditing(true)}>
-                Edit Profile
-              </button>
-            ) : (
-              <>
-                <button className="btn" onClick={cancelEdit}>Cancel</button>
-                <button className="btn primary" onClick={saveProfile}>Save</button>
-              </>
-            )}
-          </div>
         </div>
 
         {/* RIGHT SECTION */}
@@ -189,7 +178,14 @@ export default function Profile() {
 
           {/* PROFILE FORM */}
           <form className="profile-user-page-form card" onSubmit={saveProfile}>
-            <h3>Profile Details</h3>
+            <div className="profile-user-page-header">
+              <h3>Profile Details</h3>
+              {!editing && (
+                <button type="button" className="btn primary" onClick={() => setEditing(true)}>
+                  Edit Profile
+                </button>
+              )}
+            </div>
 
             <div className="profile-user-page-row">
               <label>Name</label>
@@ -242,28 +238,41 @@ export default function Profile() {
           </form>
 
           {/* PASSWORD FORM */}
-          <form className="profile-user-page-password card" onSubmit={changePassword}>
-            <h3>Change Password</h3>
-
-            <div className="profile-user-page-row">
-              <label>Current Password</label>
-              <input type="password" name="current" value={pwdForm.current} onChange={handlePwdChange} />
+          <div className="profile-user-page-password card">
+            <div className="profile-user-page-header">
+              <h3>Change Password</h3>
+              <button 
+                type="button" 
+                className="btn primary" 
+                onClick={() => setShowPasswordForm(!showPasswordForm)}
+              >
+                {showPasswordForm ? 'Hide' : 'Show'}
+              </button>
             </div>
 
-            <div className="profile-user-page-row">
-              <label>New Password</label>
-              <input type="password" name="newPwd" value={pwdForm.newPwd} onChange={handlePwdChange} />
-            </div>
+            {showPasswordForm && (
+              <form onSubmit={changePassword}>
+                <div className="profile-user-page-row">
+                  <label>Current Password</label>
+                  <input type="password" name="current" value={pwdForm.current} onChange={handlePwdChange} />
+                </div>
 
-            <div className="profile-user-page-row">
-              <label>Confirm New Password</label>
-              <input type="password" name="confirm" value={pwdForm.confirm} onChange={handlePwdChange} />
-            </div>
+                <div className="profile-user-page-row">
+                  <label>New Password</label>
+                  <input type="password" name="newPwd" value={pwdForm.newPwd} onChange={handlePwdChange} />
+                </div>
 
-            <div className="profile-user-page-actions-row">
-              <button type="submit" className="btn primary">Change Password</button>
-            </div>
-          </form>
+                <div className="profile-user-page-row">
+                  <label>Confirm New Password</label>
+                  <input type="password" name="confirm" value={pwdForm.confirm} onChange={handlePwdChange} />
+                </div>
+
+                <div className="profile-user-page-actions-row">
+                  <button type="submit" className="btn primary">Change Password</button>
+                </div>
+              </form>
+            )}
+          </div>
 
         </div>
       </div>

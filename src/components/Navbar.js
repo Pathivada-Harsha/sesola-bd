@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '../components_css/Navbar.css';
 import logo from "../images/logo.png";
 
@@ -12,6 +13,7 @@ function Navbar({ onMenuClick }) {
   const notifRef = useRef(null);
   const msgRef = useRef(null);
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
 
   // sample static notifications
   const notifications = [
@@ -42,8 +44,29 @@ function Navbar({ onMenuClick }) {
   }, []);
 
   function handleLogout() {
+    logout();
     navigate('/login', { replace: true });
   }
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (user && user.name) {
+      const names = user.name.split(' ');
+      if (names.length >= 2) {
+        return names[0][0] + names[1][0];
+      }
+      return names[0].substring(0, 2);
+    }
+    return 'U';
+  };
+
+  // Get display name
+  const getDisplayName = () => {
+    if (user && user.name) {
+      return user.name;
+    }
+    return 'User';
+  };
 
   return (
     <nav className="navbar">
@@ -144,8 +167,8 @@ function Navbar({ onMenuClick }) {
               setShowNotifications(false);
               setShowMessages(false);
             }}>
-              <div className="profile-avatar">PHV</div>
-              <span className="profile-name">Harsha</span>
+              <div className="profile-avatar">{getUserInitials()}</div>
+              <span className="profile-name">{getDisplayName()}</span>
               <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M19 9l-7 7-7-7" />
