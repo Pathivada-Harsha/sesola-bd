@@ -1,23 +1,44 @@
 // src/Pages/Profile.jsx
 import React, { useState, useRef } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import "../pages-css/Profile.css";
+import { useAuth } from '../hooks/useAuth';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
 
 export default function Profile() {
+  const { user: authUser, login } = useAuth();
+  
   const initialUser = {
-    id: "U-1001",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+91 90000 00000",
-    role: "BD Manager",
+    id: authUser.id,
+    name: authUser.name,
+    email: authUser.email,
+    phone: authUser.phone,
+    role: authUser.role.toUpperCase(),
     team: "Business Development",
-    joined: "2024-03-12T09:30:00Z",
-    lastLogin: "2025-12-05T10:30:00Z",
+    joined: authUser.created_at,
+    lastLogin: authUser.last_login_at,
     avatarUrl: null,
   };
 
   const [user, setUser] = useState(initialUser);
   const [editing, setEditing] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  
+  // Password visibility states
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Toast notification state
+  const [toast, setToast] = useState({
+    show: false,
+    type: '', // 'success', 'error', 'warning'
+    message: ''
+  });
+  
   const [profileForm, setProfileForm] = useState({
     name: user.name,
     email: user.email,
@@ -35,6 +56,21 @@ export default function Profile() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(user.avatarUrl || null);
   const fileRef = useRef();
+
+  // Show toast notification
+  const showToast = (type, message) => {
+    setToast({ show: true, type, message });
+    
+    // Auto hide after 4 seconds
+    setTimeout(() => {
+      setToast({ show: false, type: '', message: '' });
+    }, 4000);
+  };
+
+  // Close toast manually
+  const closeToast = () => {
+    setToast({ show: false, type: '', message: '' });
+  };
 
   function handleProfileChange(e) {
     const { name, value } = e.target;
@@ -62,42 +98,136 @@ export default function Profile() {
     fileRef.current.value = "";
   }
 
-  function saveProfile(e) {
+  async function saveProfile(e) {
     e.preventDefault();
+    
     if (!profileForm.name || !profileForm.email) {
-      alert("Please provide name and email.");
+      showToast('error', 'Please provide name and email.');
       return;
     }
 
-    setUser((u) => ({
-      ...u,
-      name: profileForm.name,
-      email: profileForm.email,
-      phone: profileForm.phone,
-      role: profileForm.role,
-      team: profileForm.team,
-      avatarUrl: avatarPreview || u.avatarUrl,
-    }));
+    setLoading(true);
 
-    setEditing(false);
-    alert("Profile saved (stub). Replace with real API.");
+    try {
+      // Prepare the data to send to backend
+      const updateData = {
+        name: profileForm.name,
+        email: profileForm.email,
+        phone: profileForm.phone,
+        role: profileForm.role,
+        last_login_at: user.lastLogin,
+      };
+
+      // Call the backend API
+      const response = await fetch(
+        `${API_BASE_URL}/login/updateUser/${user.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      const responseText = await response.text();
+
+      if (response.ok) {
+        // Update local state
+        const updatedUser = {
+          ...user,
+          name: profileForm.name,
+          email: profileForm.email,
+          phone: profileForm.phone,
+          role: profileForm.role,
+          team: profileForm.team,
+          avatarUrl: avatarPreview || user.avatarUrl,
+        };
+        
+        setUser(updatedUser);
+        
+        // Update AuthContext with new user data
+        const userData = JSON.parse(localStorage.getItem('bd_portal_user'));
+        if (userData) {
+          userData.user = {
+            ...userData.user,
+            name: profileForm.name,
+            email: profileForm.email,
+            phone: profileForm.phone,
+            role: profileForm.role,
+          };
+          login(userData);
+        }
+
+        setEditing(false);
+        showToast('success', 'Profile updated successfully!');
+      } else {
+        throw new Error(responseText || 'Failed to update profile');
+      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      showToast('error', err.message || 'Failed to update profile. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function changePassword(e) {
+  async function changePassword(e) {
     e.preventDefault();
 
     if (!pwdForm.current || !pwdForm.newPwd || !pwdForm.confirm) {
-      alert("Fill all password fields.");
+      showToast('error', 'Fill all password fields.');
       return;
     }
+    
     if (pwdForm.newPwd !== pwdForm.confirm) {
-      alert("New password and confirm password do not match.");
+      showToast('error', 'New password and confirm password do not match.');
       return;
     }
 
-    setPwdForm({ current: "", newPwd: "", confirm: "" });
-    setShowPasswordForm(false);
-    alert("Password changed (stub). Replace with real API.");
+    if (pwdForm.newPwd.length < 6) {
+      showToast('warning', 'New password must be at least 6 characters long.');
+      return;
+    }
+
+    setPasswordLoading(true);
+
+    try {
+      const passwordData = {
+        oldPassword: pwdForm.current,
+        newPassword: pwdForm.newPwd,
+      };
+
+      const response = await fetch(
+        `${API_BASE_URL}/login/updatePassword/${user.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(passwordData),
+        }
+      );
+
+      const responseText = await response.text();
+
+      if (response.ok) {
+        setPwdForm({ current: "", newPwd: "", confirm: "" });
+        setShowPasswordForm(false);
+        // Reset password visibility states
+        setShowCurrentPassword(false);
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
+        showToast('success', 'Password changed successfully!');
+      } else {
+        throw new Error(responseText || 'Failed to change password');
+      }
+    } catch (err) {
+      console.error('Error changing password:', err);
+      showToast('error', err.message || 'Failed to change password. Please check your current password.');
+    } finally {
+      setPasswordLoading(false);
+    }
   }
 
   function cancelEdit() {
@@ -127,6 +257,29 @@ export default function Profile() {
 
   return (
     <div className="profile-user-page-root page-container">
+      
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast-notification toast-${toast.type}`}>
+          <div className="toast-content">
+            <div className="toast-icon">
+              {toast.type === 'success' && '✓'}
+              {toast.type === 'error' && '✕'}
+              {toast.type === 'warning' && '⚠'}
+            </div>
+            <div className="toast-text">
+              <div className="toast-title">
+                {toast.type === 'success' && 'Success'}
+                {toast.type === 'error' && 'Error'}
+                {toast.type === 'warning' && 'Warning'}
+              </div>
+              <div className="toast-message">{toast.message}</div>
+            </div>
+          </div>
+          <button className="toast-close" onClick={closeToast}>✕</button>
+        </div>
+      )}
+
       <div className="profile-user-page-grid">
         
         {/* LEFT CARD */}
@@ -163,13 +316,6 @@ export default function Profile() {
                 {new Date(user.lastLogin).toLocaleString()}
               </div>
             </div>
-
-            <div className="profile-user-page-stat">
-              <div className="profile-user-page-stat-title">Team</div>
-              <div className="profile-user-page-stat-value">
-                {user.team}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -181,7 +327,12 @@ export default function Profile() {
             <div className="profile-user-page-header">
               <h3>Profile Details</h3>
               {!editing && (
-                <button type="button" className="btn primary" onClick={() => setEditing(true)}>
+                <button 
+                  type="button" 
+                  className="btn primary" 
+                  onClick={() => setEditing(true)}
+                  disabled={loading}
+                >
                   Edit Profile
                 </button>
               )}
@@ -189,49 +340,61 @@ export default function Profile() {
 
             <div className="profile-user-page-row">
               <label>Name</label>
-              <input name="name" value={profileForm.name} onChange={handleProfileChange} disabled={!editing} />
+              <input 
+                name="name" 
+                value={profileForm.name} 
+                onChange={handleProfileChange} 
+                disabled={!editing || loading} 
+              />
             </div>
 
             <div className="profile-user-page-row">
               <label>Email</label>
-              <input name="email" value={profileForm.email} onChange={handleProfileChange} disabled={!editing} />
+              <input 
+                name="email" 
+                type="email"
+                value={profileForm.email} 
+                onChange={handleProfileChange} 
+                disabled={!editing || loading} 
+              />
             </div>
 
             <div className="profile-user-page-row">
               <label>Phone</label>
-              <input name="phone" value={profileForm.phone} onChange={handleProfileChange} disabled={!editing} />
+              <input 
+                name="phone" 
+                value={profileForm.phone} 
+                onChange={handleProfileChange} 
+                disabled={!editing || loading} 
+              />
             </div>
 
             <div className="profile-user-page-row">
               <label>Designation / Role</label>
-              <input name="role" value={profileForm.role} onChange={handleProfileChange} disabled={!editing} />
-            </div>
-
-            <div className="profile-user-page-row">
-              <label>Team</label>
-              <input name="team" value={profileForm.team} onChange={handleProfileChange} disabled={!editing} />
-            </div>
-
-            <div className="profile-user-page-row">
-              <label>Avatar</label>
-              <div className="profile-user-page-avatar-controls">
-                <input ref={fileRef} type="file" accept="image/*" onChange={handleAvatarSelect} disabled={!editing} />
-                {avatarPreview && (
-                  <button type="button" className="btn" onClick={clearAvatar} disabled={!editing}>
-                    Remove
-                  </button>
-                )}
-              </div>
-              <div className="profile-user-page-avatar-note">PNG, JPG. Max 2MB.</div>
+              <input 
+                name="role" 
+                value={profileForm.role} 
+                onChange={handleProfileChange} 
+                disabled={!editing || loading} 
+              />
             </div>
 
             {editing && (
               <div className="profile-user-page-actions-row">
-                <button type="button" className="btn" onClick={cancelEdit}>
+                <button 
+                  type="button" 
+                  className="btn" 
+                  onClick={cancelEdit}
+                  disabled={loading}
+                >
                   Cancel
                 </button>
-                <button type="submit" className="btn primary">
-                  Save Profile
+                <button 
+                  type="submit" 
+                  className="btn primary"
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Save Profile'}
                 </button>
               </div>
             )}
@@ -244,7 +407,17 @@ export default function Profile() {
               <button 
                 type="button" 
                 className="btn primary" 
-                onClick={() => setShowPasswordForm(!showPasswordForm)}
+                onClick={() => {
+                  setShowPasswordForm(!showPasswordForm);
+                  if (showPasswordForm) {
+                    setPwdForm({ current: "", newPwd: "", confirm: "" });
+                    // Reset visibility states when hiding form
+                    setShowCurrentPassword(false);
+                    setShowNewPassword(false);
+                    setShowConfirmPassword(false);
+                  }
+                }}
+                disabled={passwordLoading}
               >
                 {showPasswordForm ? 'Hide' : 'Show'}
               </button>
@@ -254,21 +427,87 @@ export default function Profile() {
               <form onSubmit={changePassword}>
                 <div className="profile-user-page-row">
                   <label>Current Password</label>
-                  <input type="password" name="current" value={pwdForm.current} onChange={handlePwdChange} />
+                  <div className="password-input-wrapper">
+                    <input 
+                      type={showCurrentPassword ? "text" : "password"}
+                      name="current" 
+                      value={pwdForm.current} 
+                      onChange={handlePwdChange}
+                      disabled={passwordLoading}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      disabled={passwordLoading}
+                    >
+                      {showCurrentPassword ? (
+                        <AiOutlineEyeInvisible size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="profile-user-page-row">
                   <label>New Password</label>
-                  <input type="password" name="newPwd" value={pwdForm.newPwd} onChange={handlePwdChange} />
+                  <div className="password-input-wrapper">
+                    <input 
+                      type={showNewPassword ? "text" : "password"}
+                      name="newPwd" 
+                      value={pwdForm.newPwd} 
+                      onChange={handlePwdChange}
+                      disabled={passwordLoading}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      disabled={passwordLoading}
+                    >
+                      {showNewPassword ? (
+                        <AiOutlineEyeInvisible size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="profile-user-page-row">
                   <label>Confirm New Password</label>
-                  <input type="password" name="confirm" value={pwdForm.confirm} onChange={handlePwdChange} />
+                  <div className="password-input-wrapper">
+                    <input 
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirm" 
+                      value={pwdForm.confirm} 
+                      onChange={handlePwdChange}
+                      disabled={passwordLoading}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      disabled={passwordLoading}
+                    >
+                      {showConfirmPassword ? (
+                        <AiOutlineEyeInvisible size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="profile-user-page-actions-row">
-                  <button type="submit" className="btn primary">Change Password</button>
+                  <button 
+                    type="submit" 
+                    className="btn primary"
+                    disabled={passwordLoading}
+                  >
+                    {passwordLoading ? 'Changing...' : 'Change Password'}
+                  </button>
                 </div>
               </form>
             )}

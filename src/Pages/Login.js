@@ -165,7 +165,7 @@ export default function Login() {
                     console.log("Forgot password clicked");
                   }}
                 >
-                  Forgot Password? Reset Now.
+                  Forgot Password ? 
                 </button>
               </div>
 
