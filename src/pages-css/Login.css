@@ -104,7 +104,7 @@
 
 /* extras */
 .login-extras { margin-top: 6px; display:flex; justify-content:space-between; align-items:center; }
-.login-forgot { color: var(--blue); text-decoration:none; font-size:13px; }
+.login-forgot { color: var(--blue); text-decoration:none; font-size:13px; border: none;background: none;cursor: pointer;}
 
 /* error */
 .login-error { background: #fff1f2; color: #9b1230; padding:8px 10px; border-radius:8px; font-size:13px; }
