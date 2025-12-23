@@ -11,7 +11,7 @@ const ProcurementManagement = () => {
   const [vendorTypeFilter, setVendorTypeFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, projectId, updateFilters } = useGroupProjectFilters();
 
   const vendors = [
     {
@@ -167,6 +167,7 @@ const ProcurementManagement = () => {
 
             <GroupProjectFilter
               groupValue={groupName}
+              subGroupValue={subGroupName}
               projectValue={projectId}
               onChange={updateFilters}
             />

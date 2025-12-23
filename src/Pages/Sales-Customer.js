@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../pages-css/Sales-Customer.css';
-import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import GroupCategoryFilter  from "./../components/Dropdowns/groupCategoryFilter.js";
 import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 const CustomerDatabase = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -10,7 +10,7 @@ const CustomerDatabase = () => {
   const [selectedGroup, setSelectedGroup] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedRows, setSelectedRows] = useState([]);
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, updateFilters } = useGroupProjectFilters();
 
   // Sample customer data
   const customers = [
@@ -362,11 +362,11 @@ const CustomerDatabase = () => {
       {/* Header */}
       <div className="page-header-with-filter">
 
-        <GroupProjectFilter
-          groupValue={groupName}
-          projectValue={projectId}
-          onChange={updateFilters}
-        />
+        <GroupCategoryFilter
+        groupValue={groupName}
+        subGroupValue={subGroupName}
+        onChange={updateFilters}
+      />
       </div>
       <div className="sales-customer-page-header">
         <h1 className="sales-customer-page-title">Customer / Client Database</h1>

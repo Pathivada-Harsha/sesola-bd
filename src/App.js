@@ -27,6 +27,7 @@ import BillsRecieved from "./Pages/Bills-Recieved.js";
 import Reports from "./Pages/Reports.js";
 import SolarProfile from "./Pages/Solarproposaleditor.js";
 import Users from "./Pages/UsersPage.js";
+import Addropdownitems from "./Pages/AddNewDropdownItems.js";
 import './App.css';
 
 function AppWrapper() {
@@ -190,6 +191,11 @@ function AppShell({ hideShell }) {
           <Route path="/users" element={
             <ProtectedRoute>
               <Users />
+            </ProtectedRoute>
+          } />
+          <Route path="/officeuse/addgroupproject" element={
+            <ProtectedRoute>
+              <Addropdownitems />
             </ProtectedRoute>
           } />
         </Routes>

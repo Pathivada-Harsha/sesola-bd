@@ -8,8 +8,8 @@ const BillsReceived = () => {
   const [bills, setBills] = useState([]);
   const [selectedBills, setSelectedBills] = useState([]);
 
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
-      const [filters, setFilters] = useState({
+  const { groupName, subGroupName, projectId, updateFilters } = useGroupProjectFilters();
+  const [filters, setFilters] = useState({
     search: '',
     paymentStatus: 'all',
     vendor: 'all',
@@ -443,6 +443,7 @@ const BillsReceived = () => {
           </h1>
           <GroupProjectFilter
             groupValue={groupName}
+            subGroupValue={subGroupName}
             projectValue={projectId}
             onChange={updateFilters}
           />

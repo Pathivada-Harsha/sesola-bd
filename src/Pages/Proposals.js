@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../pages-css/Proposals.css';
 
-import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import GroupCategoryFilter from "./../components/Dropdowns/groupCategoryFilter.js";
 import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 // Mock data for proposals
 const mockProposals = [
@@ -135,7 +135,7 @@ const mockProposals = [
 
 const ProposalsManagementPage = () => {
   const [proposals, setProposals] = useState(mockProposals);
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, updateFilters } = useGroupProjectFilters();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -351,9 +351,9 @@ const ProposalsManagementPage = () => {
       <div className="page-header-with-filter">
         <h1 className="proposal-page-title">Proposals</h1>
 
-        <GroupProjectFilter
+        <GroupCategoryFilter
           groupValue={groupName}
-          projectValue={projectId}
+          subGroupValue={subGroupName}
           onChange={updateFilters}
         />
       </div>

@@ -1,0 +1,37 @@
+
+
+
+// for Three Elements 
+import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
+  const { groupName, subGroupName, projectId, updateFilters } = useGroupProjectFilters();
+<div className="page-header-with-filter">
+    <h1 className="procurement-bills-received-title">
+        Bills Received
+        {/* <span className="procurement-bills-received-count">({bills.length})</span> */}
+    </h1>
+    <GroupProjectFilter
+        groupValue={groupName}
+        subGroupValue={subGroupName}
+        projectValue={projectId}
+        onChange={updateFilters}
+      />
+</div>
+
+
+// for Two  Elements 
+import GroupCategoryFilter  from "./../components/Dropdowns/groupCategoryFilter.js";
+import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
+  const { groupName, subGroupName, updateFilters } = useGroupProjectFilters();
+<div className="page-header-with-filter">
+    <h1 className="procurement-bills-received-title">
+        Bills Received
+        {/* <span className="procurement-bills-received-count">({bills.length})</span> */}
+    </h1>
+   <GroupCategoryFilter
+        groupValue={groupName}
+        subGroupValue={subGroupName}
+        onChange={updateFilters}
+      />
+</div>
+

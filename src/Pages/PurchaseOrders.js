@@ -8,7 +8,8 @@ import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFil
 const PurchaseOrders = () => {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [selectedPOs, setSelectedPOs] = useState([]);
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();  const [filters, setFilters] = useState({
+  const { groupName, subGroupName, projectId, updateFilters } = useGroupProjectFilters();
+  const [filters, setFilters] = useState({
     search: '',
     status: 'all',
     vendor: 'all',
@@ -504,6 +505,7 @@ const PurchaseOrders = () => {
           </h1>
           <GroupProjectFilter
             groupValue={groupName}
+            subGroupValue={subGroupName}
             projectValue={projectId}
             onChange={updateFilters}
           />

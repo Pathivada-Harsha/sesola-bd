@@ -1,8 +1,10 @@
+// useGroupProjectFilters.js (SAME HOOK FOR BOTH COMPONENTS)
 import { useState, useEffect } from 'react';
 
 /**
- * Custom hook to manage Group & Project filters with localStorage sync
- * This ensures filter selection persists across all pages
+ * Custom hook to manage Group, SubGroup & Project filters with localStorage sync
+ * Compatible with both 2-dropdown and 3-dropdown components
+ * This ensures filter selection persists and syncs across all pages
  * 
  * Place this file in: src/components/Dropdowns/useGroupProjectFilters.js
  */
@@ -18,10 +20,10 @@ const useGroupProjectFilters = () => {
       console.error('Error reading from localStorage:', error);
     }
     // Default empty filters
-    return { groupName: '', projectId: '' };
+    return { groupName: '', subGroupName: '', projectId: '' };
   });
 
-  // Listen for changes in localStorage (syncs across browser tabs)
+  // Listen for changes in localStorage (syncs across browser tabs AND components)
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'groupProjectFilters' && e.newValue) {
@@ -34,11 +36,22 @@ const useGroupProjectFilters = () => {
       }
     };
 
+    // Listen for custom event (for same-tab updates between components)
+    const handleCustomStorageChange = (e) => {
+      if (e.detail) {
+        setFilters(e.detail);
+      }
+    };
+
     // This event fires when localStorage is modified in another tab/window
     window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event for same-tab sync between components
+    window.addEventListener('groupProjectFiltersChanged', handleCustomStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('groupProjectFiltersChanged', handleCustomStorageChange);
     };
   }, []);
 
@@ -48,6 +61,11 @@ const useGroupProjectFilters = () => {
     
     try {
       localStorage.setItem('groupProjectFilters', JSON.stringify(newFilters));
+      
+      // Dispatch custom event for same-tab sync
+      window.dispatchEvent(new CustomEvent('groupProjectFiltersChanged', { 
+        detail: newFilters 
+      }));
     } catch (error) {
       console.error('Error saving to localStorage:', error);
     }
@@ -55,22 +73,28 @@ const useGroupProjectFilters = () => {
 
   // Function to reset/clear filters
   const resetFilters = () => {
-    const emptyFilters = { groupName: '', projectId: '' };
+    const emptyFilters = { groupName: '', subGroupName: '', projectId: '' };
     setFilters(emptyFilters);
     
     try {
       localStorage.setItem('groupProjectFilters', JSON.stringify(emptyFilters));
+      
+      // Dispatch custom event for same-tab sync
+      window.dispatchEvent(new CustomEvent('groupProjectFiltersChanged', { 
+        detail: emptyFilters 
+      }));
     } catch (error) {
       console.error('Error clearing localStorage:', error);
     }
   };
 
   return {
-    filters,              // Complete filter object: { groupName, projectId }
+    filters,                          // Complete filter object: { groupName, subGroupName, projectId }
     groupName: filters.groupName,     // Just the group name
+    subGroupName: filters.subGroupName, // Just the subgroup/category name
     projectId: filters.projectId,     // Just the project ID
-    updateFilters,        // Function to update filters
-    resetFilters          // Function to clear filters
+    updateFilters,                    // Function to update filters
+    resetFilters                      // Function to clear filters
   };
 };
 

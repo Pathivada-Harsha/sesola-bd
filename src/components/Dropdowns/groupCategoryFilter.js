@@ -1,26 +1,23 @@
-// src/components/Dropdowns/GroupProjectFilter.js
+// GroupCategoryFilter.js (2 Dropdowns Only)
 import React, { useState, useEffect } from 'react';
-import filterApi from '../../services/filterApi';
 import '../../components_css/Dropdowns/GroupProjectFilter.css';
+import filterApi from '../../services/filterApi.js';
 
-const GroupProjectFilter = ({ 
+
+const GroupCategoryFilter = ({ 
   groupValue, 
   subGroupValue,
-  projectValue, 
   onChange 
 }) => {
   const [groups, setGroups] = useState([]);
   const [subGroups, setSubGroups] = useState([]);
-  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState({
     groups: false,
-    subGroups: false,
-    projects: false
+    subGroups: false
   });
   const [error, setError] = useState({
     groups: null,
-    subGroups: null,
-    projects: null
+    subGroups: null
   });
 
   // Fetch groups on component mount
@@ -34,18 +31,8 @@ const GroupProjectFilter = ({
       fetchSubGroups(groupValue);
     } else {
       setSubGroups([]);
-      setProjects([]);
     }
   }, [groupValue]);
-
-  // Fetch projects when subgroup changes
-  useEffect(() => {
-    if (groupValue && subGroupValue) {
-      fetchProjects(groupValue, subGroupValue);
-    } else {
-      setProjects([]);
-    }
-  }, [groupValue, subGroupValue]);
 
   const fetchGroups = async () => {
     setLoading(prev => ({ ...prev, groups: true }));
@@ -79,24 +66,9 @@ const GroupProjectFilter = ({
     }
   };
 
-  const fetchProjects = async (groupName, subGroupName) => {
-    setLoading(prev => ({ ...prev, projects: true }));
-    setError(prev => ({ ...prev, projects: null }));
-    
-    try {
-      const data = await filterApi.getProjects(groupName, subGroupName);
-      setProjects(data);
-    } catch (error) {
-      console.error('Failed to fetch projects:', error);
-      setError(prev => ({ ...prev, projects: 'Failed to load projects' }));
-      setProjects([]);
-    } finally {
-      setLoading(prev => ({ ...prev, projects: false }));
-    }
-  };
-
   const handleGroupChange = (e) => {
     const newGroup = e.target.value;
+    
     const newFilters = {
       groupName: newGroup,
       subGroupName: '',
@@ -115,20 +87,6 @@ const GroupProjectFilter = ({
       groupName: groupValue,
       subGroupName: e.target.value,
       projectId: ''
-    };
-    
-    localStorage.setItem('groupProjectFilters', JSON.stringify(newFilters));
-    
-    if (typeof onChange === 'function') {
-      onChange(newFilters);
-    }
-  };
-
-  const handleProjectChange = (e) => {
-    const newFilters = {
-      groupName: groupValue,
-      subGroupName: subGroupValue,
-      projectId: e.target.value
     };
     
     localStorage.setItem('groupProjectFilters', JSON.stringify(newFilters));
@@ -196,40 +154,8 @@ const GroupProjectFilter = ({
           <span className="filter-error">{error.subGroups}</span>
         )}
       </div>
-
-      <div className="filter-group">
-        <label htmlFor="project-filter" className="filter-label">
-          Project
-        </label>
-        <select
-          id="project-filter"
-          className="filter-select"
-          value={projectValue || ''}
-          onChange={handleProjectChange}
-          disabled={!subGroupValue || loading.projects}
-        >
-          <option value="">
-            {!subGroupValue 
-              ? 'Select Category First' 
-              : loading.projects
-              ? 'Loading...'
-              : error.projects
-              ? 'Error loading projects'
-              : 'Select Project'
-            }
-          </option>
-          {projects.map(project => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
-        {error.projects && (
-          <span className="filter-error">{error.projects}</span>
-        )}
-      </div>
     </div>
   );
 };
 
-export default GroupProjectFilter;
+export default GroupCategoryFilter;

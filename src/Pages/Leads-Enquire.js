@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import '../pages-css/Leads-Enquire.css';
 
 
-import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import GroupCategoryFilter from './../components/Dropdowns/groupCategoryFilter.js';
 import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 function LeadsEnquiries() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,7 +17,7 @@ function LeadsEnquiries() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, updateFilters } = useGroupProjectFilters();
 
   // Sample data
   const [leads, setLeads] = useState([
@@ -201,11 +201,11 @@ function LeadsEnquiries() {
         <div className="page-header-with-filter">
                     <h1 className="leads-enquiries-title">Leads / Enquiries</h1>
 
-          <GroupProjectFilter
-            groupValue={groupName}
-            projectValue={projectId}
-            onChange={updateFilters}
-          />
+          <GroupCategoryFilter
+          groupValue={groupName}
+          subGroupValue={subGroupName}
+          onChange={updateFilters}
+        />
         </div>
       </div>
 

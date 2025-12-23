@@ -233,15 +233,27 @@
   display: none;
 }
 
-/* Hide chevron when collapsed but keep group headers clickable */
+/* Show chevron when collapsed - make it centered and visible */
 .sidebar.collapsed .sidebar-group-chevron {
-  display: none;
+  display: block;
+  color: #1f2937;
+  margin: 0 auto;
+  width: 20px;
+  height: 20px;
 }
 
-/* Adjust group header in collapsed mode */
+/* Make the group header centered and more visible when collapsed */
 .sidebar.collapsed .sidebar-group-header {
   justify-content: center;
-  padding: 8px 6px;
+  padding: 12px 6px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.sidebar.collapsed .sidebar-group-header.collapsible:hover {
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
 }
 
 /* Adjust logo alignment in collapsed mode */
@@ -315,6 +327,10 @@
   
   .sidebar.collapsed .sidebar-group-chevron {
     display: block;
+    color: #9ca3af;
+    margin: 0;
+    width: 16px;
+    height: 16px;
   }
   
   .sidebar.collapsed .sidebar-item {
@@ -326,6 +342,12 @@
   .sidebar.collapsed .sidebar-group-header {
     justify-content: space-between;
     padding: 8px 12px;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .sidebar.collapsed .sidebar-group-header.collapsible:hover {
+    background-color: #f9fafb;
   }
   
   .sidebar-logo-text {

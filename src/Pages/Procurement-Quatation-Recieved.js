@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Download, Plus, X, Edit2, Eye, Check, XCircle, FileText, Upload, Calendar, DollarSign, TrendingUp, Clock, Package, CheckCircle, Star, AlertCircle, ShoppingCart } from 'lucide-react';
 import '../pages-css/Procurement-Quatation-Recieved.css';
-import GroupProjectFilter from "./../components/Dropdowns/GroupProjectFilter.js";
+import GroupCategoryFilter  from "./../components/Dropdowns/groupCategoryFilter.js";
 import useGroupProjectFilters from "./../components/Dropdowns/useGroupProjectFilters.js";
 const QuotationsReceived = () => {
   const [quotations, setQuotations] = useState([]);
   const [selectedQuotations, setSelectedQuotations] = useState([]);
-  const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, updateFilters } = useGroupProjectFilters();
 
   const [filters, setFilters] = useState({
     search: '',
@@ -438,9 +438,9 @@ const QuotationsReceived = () => {
           <h1 className="procurement-quotation-received-title">
             Quotations Received <span className="procurement-quotation-received-count">({quotations.length})</span>
           </h1>
-          <GroupProjectFilter
+          <GroupCategoryFilter
             groupValue={groupName}
-            projectValue={projectId}
+            subGroupValue={subGroupName}
             onChange={updateFilters}
           />
         </div>

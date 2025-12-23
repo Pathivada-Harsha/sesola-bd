@@ -153,7 +153,7 @@ const InvoicesManagementPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
- const { groupName, projectId, updateFilters } = useGroupProjectFilters();
+  const { groupName, subGroupName, projectId, updateFilters } = useGroupProjectFilters();
   // Form states
   const [formData, setFormData] = useState({
     invoiceTitle: '',
